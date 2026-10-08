@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gtm-engineer-starter.example/schemas/dossier-builder/dossier.customer.schema.json",
+  "title": "Customer Dossier",
+  "description": "Per-account post-sale dossier. Pass-1 verbatim shape — no reasoning fields. Reasoning lives in a downstream Pass-2 skill.",
+  "type": "object",
+  "required": [
+    "account_id", "schema_version", "rebuilt_at", "mode",
+    "account_name", "outcome", "headline",
+    "timeline", "structured_signals",
+    "linking_trust", "data_completeness", "flags",
+    "provenance_index", "notes_from_revops"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "account_id": {"type": "string", "description": "Canonical primary-id-system value"},
+    "schema_version": {"type": "string", "const": "dossier-builder/1.0.0"},
+    "rebuilt_at": {"type": "string", "format": "date-time"},
+    "mode": {"type": "string", "const": "customer"},
+    "account_name": {"type": "string"},
+    "account_name_provenance": {"$ref": "#/$defs/provenance"},
+    "outcome": {
+      "type": "string",
+      "enum": ["active", "paying_silent", "cancelled", "prospect", "unknown"]
+    },
+    "headline": {"type": "string", "description": "Deterministic single-line summary string. Typed fields only — missing fields say so verbatim."},
+    "summary": {
+      "type": "object",
+      "properties": {
+        "one_liner": {"type": "string"},
+        "three_bullets": {"type": "array", "items": {"type": "string"}, "maxItems": 3}
+      }
+    },
+    "timeline": {
+      "type": "array",
+      "items": {"$ref": "source_event_envelope.schema.json"}
+    },
+    "customer_voice": {
+      "type": "array",
+      "description": "Additive analysis-ready view of customer-voice turns derived from per-event transcript_tagged (W4a / Speaker Attribution Protocol). Customer-only; verbatim full transcript retained on the events.",
+      "items": {
+        "type": "object",
+        "required": ["elicitation", "text"],
+        "properties": {
+          "call_id": {"type": "string"},
+          "date": {"type": "string", "format": "date-time"},
+          "speaker_label": {"type": "string"},
+          "elicitation": {"type": "string", "enum": ["unprompted", "led", "seller_echo"]},
+          "text": {"type": "string", "description": "Verbatim customer turn"}
+        }
+      }
+    },
+    "speaker_attribution_summary": {
+      "type": "object",
+      "description": "Per-account roll-up of transcript-turn role/elicitation tagging (W4a / Speaker Attribution Protocol).",
+      "properties": {
+        "n_turns": {"type": "integer", "minimum": 0},
+        "n_company": {"type": "integer", "minimum": 0},
+        "n_customer": {"type": "integer", "minimum": 0},
+        "n_unknown": {"type": "integer", "minimum": 0},
+        "n_unprompted": {"type": "integer", "minimum": 0},
+        "n_led": {"type": "integer", "minimum": 0},
+        "n_seller_echo": {"type": "integer", "minimum": 0}
+      }
+    },
+    "structured_signals": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mrr_snapshots": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["as_of", "amount", "source"],
+            "properties": {
+              "as_of": {"type": "string", "format": "date"},
+              "amount": {"type": "number"},
+              "source": {"type": "string"},
+              "breakdown_by_product": {"type": "object", "additionalProperties": {"type": "number"}}
+            }
+          }
+        },
+        "arr_now": {"type": ["number", "null"]},
+        "tenure_days": {"type": ["integer", "null"]},
+        "tenure_source": {"type": "string", "enum": ["opportunity_won", "opportunity_any", "account_created", "billing_first_charge", "bulk_import_uncertain"]},
+        "cases_open": {"type": "integer", "minimum": 0},
+        "cases_total": {"type": "integer", "minimum": 0},
+        "subscription_state": {"type": "string"},
+        "contracts": {"type": "array"},
+        "churn_signals": {"type": "array", "items": {"type": "string"}},
+        "csm": {"type": ["string", "null"]},
+        "plan_tier": {"type": ["string", "null"]},
+        "health_score": {"type": ["string", "number", "null"]}
+      }
+    },
+    "linking_trust": {
+      "type": "object",
+      "required": ["verdict", "basis"],
+      "properties": {
+        "verdict": {"type": "string", "enum": ["high", "medium", "low", "none", "indeterminate"]},
+        "basis": {"type": "string", "description": "How the verdict was derived"},
+        "verified_by": {"type": "string"},
+        "verified_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "data_completeness": {
+      "type": "object",
+      "required": ["score"],
+      "properties": {
+        "critical": {"type": "object", "additionalProperties": {"type": "boolean"}},
+        "important": {"type": "object", "additionalProperties": {"type": "boolean"}},
+        "score": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "flags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "severity"],
+        "properties": {
+          "id": {"type": "string", "description": "e.g. mrr_pos_no_calls_180d, customer_but_cancelled, paradox, name_test_fake_demo_regex"},
+          "severity": {"type": "string", "enum": ["critical", "warn", "note"]},
+          "explanation": {"type": "string"},
+          "evidence": {"type": "array"}
+        }
+      }
+    },
+    "provenance_index": {
+      "type": "object",
+      "description": "Map of field_path → provenance for every visible field",
+      "additionalProperties": {"$ref": "#/$defs/provenance"}
+    },
+    "notes_from_revops": {
+      "type": "array",
+      "items": {"$ref": "tiebreaker.schema.json"}
+    }
+  },
+  "$defs": {
+    "provenance": {
+      "type": "object",
+      "required": ["value", "rule", "source"],
+      "properties": {
+        "value": {},
+        "rule": {"type": "string"},
+        "source": {"type": "string"},
+        "raw_ref": {"type": "object"}
+      }
+    }
+  }
+}

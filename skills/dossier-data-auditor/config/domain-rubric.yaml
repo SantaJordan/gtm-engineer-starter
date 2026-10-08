@@ -1,0 +1,103 @@
+version: 1
+
+# Per-account canonical-domain selection rubric. Applied by
+# scripts/canonical_domain_pick.py. Inputs: every URL-like value harvested
+# from all URL-class columns for one account. Output: top score → canonical,
+# runner-up → flag, confidence ∈ {high, medium, low, zero}.
+
+# STEP 1 — canonicalize each candidate value:
+canonicalization:
+  - lowercase
+  - strip_scheme
+  - strip_www_prefix
+  - strip_trailing_slash
+  - strip_query_string
+  - strip_fragment
+  - idn_decode
+
+# STEP 2 — exclude noise BEFORE scoring:
+exclusions:
+  - tenant_domain                 # from audit_context.json
+  - personal_email_domains        # config/personal-domains.txt (shipped); extend with --personal-domains
+  - parking_page_domains          # sedo, dan, godaddy auctions, hugedomains, bodis
+  - platform_subdomains           # *.salesforce.com, *.lightning.force.com, *.hubspot.com, *.myshopify.com, *.zendesk.com, *.atlassian.net
+  - link_shorteners               # bit.ly, lnkd.in, t.co, ow.ly, tinyurl.com
+
+# STEP 3 — score each remaining candidate:
+scoring_rules:
+  - id: appears_in_primary_website
+    weight: +3
+    description: "Candidate matches a value from any primary_website column."
+
+  - id: appears_in_domain_only_field
+    weight: +3
+    description: "Candidate matches a value from any domain_only sub-class column."
+
+  - id: agreement_two_plus_enrichment_providers
+    weight: +2
+    description: "Candidate matches values from ≥2 different enrichment_domain sub-class columns (clearbit + zoominfo, etc.)."
+
+  - id: agreement_one_enrichment_provider
+    weight: +1
+    description: "Candidate matches a value from 1 enrichment_domain column."
+
+  - id: linkedin_round_trip_match
+    weight: +2
+    description: "Candidate matches the registered-domain root of the linkedin_url's resolved display via Blitz domain↔linkedin."
+
+  - id: modal_email_domain_majority
+    weight: +2
+    description: "After tenant_strip + personal-domain exclusion, candidate is the modal email-inferred domain across contacts on this account AND its share is ≥40%."
+
+  - id: modal_email_domain_minority
+    weight: +1
+    description: "Candidate is the modal email-inferred domain but share is 20–40%."
+
+  - id: in_secondary_domains_but_not_primary
+    weight: -2
+    description: "Candidate appears in secondary_domain class but NOT in primary_website — likely subsidiary, not parent."
+
+  - id: dns_nxdomain
+    weight: -3
+    description: "Candidate fails DNS lookup; domain is dead."
+
+  - id: page_render_parked_signal
+    weight: -3
+    description: "Firecrawl render returns parking-page fingerprints."
+
+  - id: is_subdomain_not_apex
+    weight: -1
+    description: "Candidate is a subdomain (store.X, blog.X, support.X) — prefer apex when both are present."
+
+# STEP 4 — confidence assignment:
+confidence_bands:
+  high:
+    min_score: 6
+    min_agreement_quorum: 4    # count of independent scoring rules that contributed positive points
+  medium:
+    min_score: 4
+    min_agreement_quorum: 3
+  low:
+    min_score: 2
+    min_agreement_quorum: 2
+  zero:
+    description: "Score < 2 OR quorum < 2 → no usable candidate. Surface to human."
+
+# STEP 5 — verdict labels (mutually exclusive):
+verdicts:
+  CANONICAL_VERIFIED:
+    description: "High confidence; primary_website matches a strong signal cluster."
+  CANONICAL_INFERRED:
+    description: "Medium confidence; primary_website unset but enrichment + email-domain modal agree."
+  CANONICAL_PARKED:
+    description: "Best candidate resolves to a parking page. Treat account as inactive or seek alternate domain via name lookup."
+  CANONICAL_DEAD:
+    description: "Best candidate fails DNS. Try DiscoLike `/match` on account_name; possibly acquired/rebranded."
+  CANONICAL_ACQUIRED_REPOINTED:
+    description: "301-chain ends at a different company. Re-canonicalize to the redirect target."
+  MULTI_DOMAIN_NEEDS_CONSOLIDATION:
+    description: "Two candidates both have strong evidence and DiscoLike/Blitz say one is a child of the other. Forward to W2c."
+  CONFLICT_REQUIRES_HUMAN:
+    description: "Candidates disagree at similar scores. Surface for human tiebreaker."
+  NO_USABLE_DOMAIN:
+    description: "All URL-like fields are empty, parked, or platform-subdomain. Drop account or invoke domain-linkedin-finder on account_name."

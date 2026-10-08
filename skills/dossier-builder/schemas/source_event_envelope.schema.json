@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gtm-engineer-starter.example/schemas/dossier-builder/source_event_envelope.schema.json",
+  "title": "Source Event Envelope",
+  "description": "One row per event from any data source. Pass-1 verbatim only — no reasoning fields. Every event must round-trip back to its source via raw_ref.",
+  "type": "object",
+  "required": ["account_local_id", "date", "source", "type", "subject", "raw_ref", "fields", "provenance"],
+  "additionalProperties": false,
+  "properties": {
+    "account_local_id": {
+      "type": "string",
+      "description": "Identifier in the source system's primary-key space. Linking to canonical account_id happens in W2b."
+    },
+    "date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601. If the source only provides a date, use 00:00:00 UTC and note in provenance."
+    },
+    "source": {
+      "type": "string",
+      "enum": ["gong_call", "sfdc_task", "sfdc_event", "sfdc_email", "email_incoming", "email_outgoing", "opportunity_created", "stage_transition", "case", "subscription", "contract", "product_event", "support_ticket", "csm_note", "intercom_conversation", "marketing_event", "billing_event", "other"],
+      "description": "Source category. 'other' must include source_vendor in fields."
+    },
+    "type": {
+      "type": "string",
+      "description": "Source-native event type (e.g. 'Outbound', 'Inbound', 'Stage 3 - Select Vendor'). Verbatim from source."
+    },
+    "subject": {
+      "type": "string",
+      "description": "Short human-readable label. Verbatim where possible."
+    },
+    "raw_ref": {
+      "type": "object",
+      "required": ["system", "id"],
+      "additionalProperties": true,
+      "properties": {
+        "system": {"type": "string", "description": "e.g. 'gong', 'sfdc', 'stripe'"},
+        "id": {"type": "string", "description": "Source primary key — must round-trip to the source record"},
+        "url": {"type": "string", "format": "uri", "description": "Optional deep link"}
+      }
+    },
+    "fields": {
+      "type": "object",
+      "description": "Verbatim source fields preserved for provenance. No transformations.",
+      "additionalProperties": true
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["rule", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "rule": {"type": "string", "description": "How this row was produced (e.g. 'pull_gong_extensive', 'sfdc_query_AccountId_in')"},
+        "source": {"type": "string", "description": "Source system + endpoint or table"},
+        "source_value": {"type": "string", "description": "Raw value(s) the row was derived from, truncated to 240 chars"}
+      }
+    }
+  }
+}

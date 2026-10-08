@@ -1,0 +1,21 @@
+customer_id,company_name,domain,linkedin_url,state_hq,arr,outcome,health,close_date,first_call_date,segment_label,notes_from_ae
+LR-001,Apex Legal Solutions,apexlegalsol.example,https://linkedin.example/company/apex-legal-solutions,NY,82000,won,healthy,2025-08-12,2025-04-22,multi-state legal,multi-state expansion in last year
+LR-002,Atlas Compliance Group,atlascompliancegroup.example,https://linkedin.example/company/atlas-compliance-group,IL,124000,won,healthy,2025-09-30,2025-05-10,multi-state legal,hired GRC director in Q1
+LR-003,Echo Counsel Partners,echocounselpartners.example,https://linkedin.example/company/echo-counsel-partners,TX,67000,won,healthy,2025-11-18,2025-07-08,multi-state legal,came in via referral
+LR-004,Oak Crest Advisors,oakcrestadvisors.example,https://linkedin.example/company/oak-crest-advisors,CA,95000,won,healthy,2025-06-04,2025-02-15,multi-state legal,growth-mode multi-state
+LR-005,Bridgewater Legal,bridgewaterlegal.example,https://linkedin.example/company/bridgewater-legal,MA,78000,won,healthy,2025-10-21,2025-06-01,multi-state legal,straightforward
+LR-006,Cantilever Compliance,cantilevercompliance.example,https://linkedin.example/company/cantilever-compliance,NJ,103000,won,healthy,2025-12-03,2025-08-19,multi-state legal,2 states 18mo
+LR-007,Dunraven Practice Group,dunravenpracticegroup.example,https://linkedin.example/company/dunraven-practice-group,FL,45000,lost,,,2025-09-12,multi-state legal,price too high they said
+LR-008,Tinley Park Counsel,tinleyparkcounsel.example,https://linkedin.example/company/tinley-park-counsel,IL,38000,lost,,,2025-08-04,multi-state legal,single state never expanded
+LR-009,Marsh Hollow Legal,marshhollowlegal.example,https://linkedin.example/company/marsh-hollow-legal,VA,52000,churned,,2024-11-22,2024-06-30,multi-state legal,churned at first renewal
+LR-010,Pemberton Practice,pembertonpractice.example,https://linkedin.example/company/pemberton-practice,GA,41000,churned,,2024-10-15,2024-04-12,multi-state legal,no compliance hire never used product
+LR-011,Acme Engineering Compliance,acmeenginecompliance.example,https://linkedin.example/company/acme-engineering-compliance,WA,148000,won,healthy,2025-07-16,2025-03-20,in-house eng,strong engineering team
+LR-012,Northbeam Systems,northbeamsystems.example,https://linkedin.example/company/northbeam-systems,CO,167000,won,healthy,2025-10-09,2025-06-22,in-house eng,replaced internal compliance tool they built
+LR-013,Sentinel Stack Co,sentinelstackco.example,https://linkedin.example/company/sentinel-stack-co,OR,134000,won,healthy,2025-11-25,2025-07-30,in-house eng,engineering manager championed
+LR-014,Halcyon Engineering,halcyonengineering.example,https://linkedin.example/company/halcyon-engineering,MA,156000,won,healthy,2025-09-02,2025-05-15,in-house eng,had been duct-taping in-house
+LR-015,Quartermile Tech,quartermiletech.example,https://linkedin.example/company/quartermile-tech,UT,142000,won,healthy,2025-12-19,2025-08-28,in-house eng,tired of maintaining own
+LR-016,Rivermark Engineering,rivermarkengineering.example,https://linkedin.example/company/rivermark-engineering,TX,128000,won,healthy,2026-01-14,2025-09-08,in-house eng,3-engineer compliance team handed it off
+LR-017,Greyleaf Systems,greyleafsystems.example,https://linkedin.example/company/greyleaf-systems,NC,89000,lost,,,2025-08-25,in-house eng,still building it themselves
+LR-018,Mosswood Solutions,mosswoodsolutions.example,https://linkedin.example/company/mosswood-solutions,VA,71000,lost,,,2025-07-19,in-house eng,bought competitor instead
+LR-019,Ironvale Tech,ironvaletech.example,https://linkedin.example/company/ironvale-tech,MN,76000,churned,,2024-12-08,2024-05-30,in-house eng,churned because internal team rebuilt
+LR-020,Driftwood Compute,driftwoodcompute.example,https://linkedin.example/company/driftwood-compute,WI,84000,churned,,2024-09-22,2024-03-15,in-house eng,never integrated with their stack

@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gtm-engineer-starter.example/schemas/dossier-builder/systems_inventory.schema.json",
+  "title": "Systems Inventory",
+  "description": "What data systems the customer has, captured during W1a interactive RevOps walk.",
+  "type": "object",
+  "required": ["primary_id_system", "tenant_domain", "categories"],
+  "additionalProperties": false,
+  "properties": {
+    "primary_id_system": {
+      "type": "string",
+      "description": "The system whose ID is treated as the canonical account join key (usually 'sfdc'). Exactly one allowed."
+    },
+    "tenant_domain": {
+      "type": "string",
+      "description": "Customer's own email domain (e.g. 'contoso.example'). Stripped from email-domain joins to prevent self-match trap."
+    },
+    "categories": {
+      "type": "object",
+      "description": "One entry per category. 'none' is allowed.",
+      "additionalProperties": false,
+      "properties": {
+        "calls": {"$ref": "#/$defs/system"},
+        "crm": {"$ref": "#/$defs/system"},
+        "marketing_automation": {"$ref": "#/$defs/system"},
+        "billing": {"$ref": "#/$defs/system"},
+        "product": {"$ref": "#/$defs/system"},
+        "support": {"$ref": "#/$defs/system"},
+        "email": {"$ref": "#/$defs/system"},
+        "ticketing": {"$ref": "#/$defs/system"},
+        "csm": {"$ref": "#/$defs/system"},
+        "data_warehouse": {"$ref": "#/$defs/system"},
+        "slack_community": {"$ref": "#/$defs/system"}
+      }
+    },
+    "key_fields_to_probe": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Beyond MRR — fields that warrant their own key-field-agent (e.g. csm, plan_tier, segment, churn_reason, health_score)."
+    },
+    "do_not_use_fields": {
+      "type": "array",
+      "description": "Fields RevOps flagged as known-bad (e.g. SFDC Opportunity.Amount = deal value, not MRR).",
+      "items": {
+        "type": "object",
+        "required": ["field_path", "reason"],
+        "properties": {
+          "field_path": {"type": "string"},
+          "reason": {"type": "string"}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "system": {
+      "type": "object",
+      "required": ["status"],
+      "additionalProperties": false,
+      "properties": {
+        "status": {"type": "string", "enum": ["present", "none", "unknown"]},
+        "vendor": {"type": "string"},
+        "access_method": {"type": "string", "enum": ["api", "csv_export", "warehouse_table", "screenshot", "other"]},
+        "record_count_estimate": {"type": "integer"},
+        "primary_key": {"type": "string", "description": "Field name in the source system that is its primary key"},
+        "has_tenant_domain_issue": {"type": "string", "enum": ["yes", "no", "unknown"]},
+        "notes": {"type": "string"}
+      }
+    }
+  }
+}

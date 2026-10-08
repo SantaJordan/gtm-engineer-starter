@@ -1,0 +1,106 @@
+# Source registry — categories the system-discovery agent walks at W1a,
+# plus per-vendor hints for source-pull agents at W2a.
+
+categories:
+  - id: calls
+    label: Call recordings
+    description: "Conversational AI / call recording. The highest-trust voice-of-customer source."
+    common_vendors: [Gong, Chorus, Sybill, Otter, Zoom]
+    has_overlay_prompt: true   # 02b-source-pull.gong.md
+    importance: critical
+    typical_primary_key: call_id
+
+  - id: crm
+    label: CRM
+    description: "Source of truth for accounts, contacts, opportunities. Almost always primary_id_system."
+    common_vendors: [Salesforce, HubSpot, Pipedrive]
+    has_overlay_prompt: true   # 02b-source-pull.sfdc.md
+    importance: critical
+    typical_primary_key: account_id
+
+  - id: marketing_automation
+    label: Marketing automation
+    description: "Lead routing, sequences, attribution. Source of truth for lead_source."
+    common_vendors: [Marketo, Eloqua, "HubSpot Marketing", Pardot, Customer.io]
+    has_overlay_prompt: false
+    importance: important
+    typical_primary_key: contact_id
+
+  - id: billing
+    label: Billing system
+    description: "Subscription state, payments, MRR/ARR truth. Highest-trust revenue source."
+    common_vendors: [Stripe, Recurly, Zuora, Chargebee, NetSuite]
+    has_overlay_prompt: true   # 02b-source-pull.billing.md
+    importance: critical
+    typical_primary_key: customer_id
+
+  - id: product
+    label: Product analytics
+    description: "Customer actions — the most direct evidence of what customers are doing."
+    common_vendors: [Mixpanel, Amplitude, Heap, Pendo, "Gainsight PX"]
+    has_overlay_prompt: false
+    importance: critical
+    typical_primary_key: user_id_or_account_id
+
+  - id: support
+    label: Support
+    description: "Tickets, conversations, SLA breaches — friction signals."
+    common_vendors: [Zendesk, Intercom, Freshdesk]
+    has_overlay_prompt: false
+    importance: important
+    typical_primary_key: ticket_id
+
+  - id: email
+    label: Email outreach / capture
+    description: "Outbound email tooling and inbound capture."
+    common_vendors: [Outreach, Salesloft, Apollo, "Native Gmail/Outlook"]
+    has_overlay_prompt: false
+    importance: important
+    typical_primary_key: message_id
+
+  - id: ticketing
+    label: Customer-facing feature requests
+    description: "Where product feedback flows in. Often joinable via email-domain only."
+    common_vendors: [Linear, Jira, "GitHub Issues", FeatureOS]
+    has_overlay_prompt: false
+    importance: nice_to_have
+    typical_primary_key: ticket_id
+
+  - id: csm
+    label: CSM platform
+    description: "Health scores, plays, account assignments. Trust for csm/health_score; weak for revenue."
+    common_vendors: [Vitally, "Gainsight CS", Catalyst, ChurnZero]
+    has_overlay_prompt: false
+    importance: important
+    typical_primary_key: account_id_or_external_id
+
+  - id: data_warehouse
+    label: Data warehouse
+    description: "BigQuery/Snowflake/Databricks tables. NEVER trust derived FK columns without per-record audit."
+    common_vendors: [BigQuery, Snowflake, Databricks, Redshift]
+    has_overlay_prompt: false
+    importance: nice_to_have
+    typical_primary_key: depends_on_table
+
+  - id: slack_community
+    label: Slack / community
+    description: "Internal CS channels, customer community. Useful for nuance, hard to join programmatically."
+    common_vendors: [Slack, Discord, Circle, Discourse]
+    has_overlay_prompt: false
+    importance: nice_to_have
+    typical_primary_key: thread_id_or_channel_id
+
+# Hints for system-discovery-agent — questions to surface for each category
+discovery_questions:
+  per_category:
+    - "Vendor name?"
+    - "Access method? (API key | warehouse table | CSV export | other)"
+    - "Rough record count?"
+    - "Primary key field?"
+    - "Could employee email addresses end up as 'external participants' in this system, polluting joins?"
+    - "Any known stale or deprecated fields we should skip?"
+
+  global:
+    - "Which system's account/customer ID is your canonical join key? (this becomes primary_id_system, exactly one)"
+    - "Beyond MRR, what fields cause RevOps debates when teams disagree? (these become key_fields_to_probe[])"
+    - "Any fields you already know are unreliable? (these become engagement.do_not_use_fields[])"

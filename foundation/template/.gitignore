@@ -1,0 +1,32 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Customer data and generated work. Keep these out of git, always.
+# Raw exports (wiki/raw/, private/) and customer lists never enter git.
+wiki/raw/*
+!wiki/raw/.gitkeep
+private/
+labels.csv
+companies.csv
+customers.csv
+_private/
+data/
+outputs/
+out/
+dossiers/
+packets/
+audits/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# Editors and OS
+.DS_Store
+.idea/
+.vscode/

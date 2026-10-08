@@ -1,0 +1,149 @@
+{
+  "_comment": "Cheap-LLM routing table. Prices $/1M tokens in/out, researched 2026-07-03 ((O)=official source, (3P)=third-party — re-verify (3P) before wiring into estimates). per_1k_rows assumes the standard extraction shape 1,500 in / 300 out. The self-maintenance loop re-verifies this file; model ids are NEVER hardcoded in pipeline scripts — they read this table.",
+  "roles": {
+    "_cascade_note": "price table used by cost_ledger.py. Prices are as of the date each row states; check the vendor pricing page before trusting them.",
+    "gate": "gpt-5.4-nano",
+    "gate_escalate": "gemini-2.5-flash",
+    "bulk_extractor": "gemini-2.5-flash-lite",
+    "bulk_extractor_fallback": "groq/llama-3.1-8b-instant",
+    "structured_extractor": "groq/openai-gpt-oss-20b",
+    "bulk_classifier": "openai/gpt-oss-120b",
+    "batch_adjudicator": "SUBSCRIPTION: in-session Opus/Fable subagents over compiled evidence packs (references/delegation.md; no API dollars)",
+    "key_manufacture_deep_verify": "SUBSCRIPTION: in-session Fable/Opus subagents (no API dollars)",
+    "audit": "SUBSCRIPTION: Opus-class in-session"
+  },
+  "models": [
+    {
+      "id": "gpt-5.4-nano",
+      "provider": "openai",
+      "in": 0.2,
+      "out": 1.25,
+      "per_1k_rows": 0.675,
+      "structured": "native json_schema (strict)",
+      "batch_discount": 0.5,
+      "verify": "REPORTED",
+      "note": "cheap gate model"
+    },
+    {
+      "id": "gemini-2.5-flash",
+      "provider": "google",
+      "in": 0.3,
+      "out": 2.5,
+      "per_1k_rows": 1.2,
+      "structured": "native responseSchema",
+      "batch_discount": 0.5,
+      "verify": "REPORTED",
+      "note": "canonical default ESCALATE for the gate cascade"
+    },
+    {
+      "id": "gemini-2.5-flash-lite",
+      "provider": "google",
+      "in": 0.1,
+      "out": 0.4,
+      "per_1k_rows": 0.27,
+      "structured": "native responseSchema",
+      "batch_discount": 0.5,
+      "verify": "REPORTED",
+      "note": "default bulk extractor"
+    },
+    {
+      "id": "gemini-3.1-flash-lite",
+      "provider": "google",
+      "in": 0.25,
+      "out": 1.5,
+      "per_1k_rows": 0.83,
+      "structured": "native responseSchema",
+      "batch_discount": 0.5,
+      "verify": "REPORTED",
+      "note": "newer alt if 2.5 retires"
+    },
+    {
+      "id": "llama-3.1-8b-instant",
+      "provider": "groq",
+      "in": 0.05,
+      "out": 0.08,
+      "per_1k_rows": 0.099,
+      "structured": "best-effort json_schema only",
+      "batch_discount": 0.5,
+      "verify": "REPORTED (O)",
+      "note": "cheapest; platform risk — swappable"
+    },
+    {
+      "id": "openai-gpt-oss-20b",
+      "provider": "groq",
+      "in": 0.075,
+      "out": 0.3,
+      "per_1k_rows": 0.2,
+      "structured": "strict json_schema",
+      "batch_discount": 0.5,
+      "verify": "REPORTED (O)",
+      "note": "cheapest STRICT-schema model"
+    },
+    {
+      "id": "openai/gpt-oss-120b",
+      "provider": "groq",
+      "in": 0.15,
+      "out": 0.6,
+      "per_1k_rows": 0.4,
+      "structured": "strict json_schema",
+      "batch_discount": 0.5,
+      "verify": "PROBED 2026-07-24",
+      "note": "bulk classifier. CORRECTED 2026-07-24: out was 0.75 (25% overstated) and structured was 'json_object + reasoning_effort' — Groq now supports genuine strict:true constrained decoding on BOTH gpt-oss-20b and 120b. Cheaper non-Groq hosts exist (~0.03/0.17 via OpenRouter) but the router MUST be provider-pinned — see dead_ends."
+    },
+    {
+      "id": "deepseek-v4-flash",
+      "provider": "deepseek",
+      "in": 0.14,
+      "out": 0.28,
+      "per_1k_rows": 0.294,
+      "structured": "json + tools",
+      "batch_discount": null,
+      "verify": "REPORTED (O)",
+      "note": "cache-hit input $0.0028/1M — huge on repeated rubrics. ⚠️ Aliases deepseek-chat/reasoner DIED 2026-07-24 — that date has passed; anything still pointing at them is broken. Use the versioned id."
+    },
+    {
+      "id": "claude-haiku-4-5",
+      "provider": "anthropic",
+      "in": 1.0,
+      "out": 5.0,
+      "per_1k_rows": 3.0,
+      "structured": "native structured outputs (GA, compiled-grammar constrained decoding)",
+      "batch_discount": 0.5,
+      "verify": "REPORTED",
+      "note": "adjudication workhorse; batch+cached rubric ≈ $1-1.5/1k adjudications. CORRECTED 2026-07-24: was 'tool-forced schema' — native structured outputs went GA on Claude 4.5+, beta header retired, param is output_config.format. Tool-forcing is now the legacy workaround. NOT confirmed to interop with the Batch API — verify before designing a batch pipeline on it."
+    },
+    {
+      "id": "claude-sonnet-5",
+      "provider": "anthropic",
+      "in": 2.0,
+      "out": 10.0,
+      "per_1k_rows": 6.0,
+      "structured": "native structured outputs (GA, compiled-grammar constrained decoding)",
+      "batch_discount": 0.5,
+      "verify": "REPORTED",
+      "note": "Official pricing re-verified 2026-09-05: $2/$10 is now the standard price; Anthropic canceled the planned September increase. https://platform.claude.com/docs/en/about-claude/pricing . Escalation adjudicator only."
+    },
+    {
+      "id": "mistral-small-3.2",
+      "provider": "mistral",
+      "in": 0.1,
+      "out": 0.3,
+      "per_1k_rows": 0.24,
+      "structured": "json mode + structured",
+      "batch_discount": null,
+      "verify": "REPORTED (3P)",
+      "note": "bench alt"
+    },
+    {
+      "id": "cerebras/llama-3.1-8b",
+      "provider": "cerebras",
+      "in": 0.1,
+      "out": 0.1,
+      "per_1k_rows": 0.18,
+      "structured": "strict json_schema (constrained)",
+      "batch_discount": null,
+      "verify": "REPORTED (3P)",
+      "note": "Groq swap target; console-verify price"
+    }
+  ]
+}

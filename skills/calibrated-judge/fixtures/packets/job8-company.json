@@ -1,0 +1,261 @@
+{
+ "_fixture": "A real scripts/build_packets.py (Job 8) output over a SYNTHETIC page cache. Every entity and person here is invented. Regenerate from the crawford skill's tests/test_build_packets.py fixtures.",
+ "built_at": "2026-09-19T00:00:00+00:00",
+ "job": "build_packets",
+ "key": "northgate-dental.example",
+ "kind": "company",
+ "lanes": {
+  "maps": false,
+  "profile": false,
+  "profile_reason": null,
+  "registry": true
+ },
+ "packet": {
+  "absent": {
+   "maps.address": {
+    "reason": "no Maps record was fetched for this row",
+    "status": "absent"
+   },
+   "maps.business_status": {
+    "reason": "no Maps record was fetched for this row",
+    "status": "absent"
+   },
+   "maps.business_status_as_of": {
+    "reason": "no Maps record was fetched for this row",
+    "status": "absent"
+   },
+   "maps.phone": {
+    "reason": "no Maps record was fetched for this row",
+    "status": "absent"
+   },
+   "maps.primary_category": {
+    "reason": "no Maps record was fetched for this row",
+    "status": "absent"
+   },
+   "maps.rating_count": {
+    "reason": "no Maps record was fetched for this row",
+    "status": "absent"
+   },
+   "maps.secondary_categories": {
+    "reason": "no Maps record was fetched for this row",
+    "status": "absent"
+   },
+   "registry.parent_org_lbn": {
+    "reason": "the nppes record carries no parent_org_lbn",
+    "status": "absent"
+   },
+   "site.contact_text": {
+    "reason": "no contact link was found in the nav or footer",
+    "status": "absent"
+   },
+   "site.redirect_terminus": {
+    "reason": "the request did not redirect",
+    "status": "absent"
+   }
+  },
+  "built_at": "2026-09-19T00:00:00+00:00",
+  "entity_key": "northgate-dental.example",
+  "fetches": [
+   {
+    "error": null,
+    "from_cache": true,
+    "kind": "homepage",
+    "status": 200,
+    "url": "https://northgate-dental.example/"
+   },
+   {
+    "error": null,
+    "from_cache": true,
+    "kind": "about",
+    "label": "About Us",
+    "status": 200,
+    "url": "https://northgate-dental.example/about"
+   },
+   {
+    "error": null,
+    "from_cache": true,
+    "kind": "services",
+    "label": "Our Services",
+    "status": 200,
+    "url": "https://northgate-dental.example/services"
+   }
+  ],
+  "kind": "company",
+  "maps": {},
+  "packet_version": "1.0",
+  "record": {
+   "city": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "companies.csv:2",
+    "status": "present",
+    "value": "Springfield"
+   },
+   "domain": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "companies.csv:2",
+    "status": "present",
+    "value": "northgate-dental.example"
+   },
+   "name": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "companies.csv:2",
+    "status": "present",
+    "value": "Northgate Dental Care"
+   },
+   "state": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "companies.csv:2",
+    "status": "present",
+    "value": "IL"
+   }
+  },
+  "registry": {
+   "as_of": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "https://npiregistry.cms.hhs.gov/api/?version=2.1&limit=1&organization_name=Northgate+Dental+Care&state=IL",
+    "status": "present",
+    "value": "2025-02-01"
+   },
+   "entity_type": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "https://npiregistry.cms.hhs.gov/api/?version=2.1&limit=1&organization_name=Northgate+Dental+Care&state=IL",
+    "status": "present",
+    "value": "organization"
+   },
+   "source": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "https://npiregistry.cms.hhs.gov/api/?version=2.1&limit=1&organization_name=Northgate+Dental+Care&state=IL",
+    "status": "present",
+    "value": "nppes"
+   },
+   "status": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "https://npiregistry.cms.hhs.gov/api/?version=2.1&limit=1&organization_name=Northgate+Dental+Care&state=IL",
+    "status": "present",
+    "value": "A"
+   },
+   "taxonomy_code": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "https://npiregistry.cms.hhs.gov/api/?version=2.1&limit=1&organization_name=Northgate+Dental+Care&state=IL",
+    "status": "present",
+    "value": "1223G0001X"
+   },
+   "taxonomy_desc": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "https://npiregistry.cms.hhs.gov/api/?version=2.1&limit=1&organization_name=Northgate+Dental+Care&state=IL",
+    "status": "present",
+    "value": "Dentist - General Practice"
+   }
+  },
+  "site": {
+   "about_text": {
+    "observed_at": "2026-09-19T00:00:00+00:00",
+    "source": "https://northgate-dental.example/about (about page, linked as 'About Us')",
+    "status": "present",
+    "value": "Our team has six hygienists. Our team has six hygienists. Our team has six hygienists. Our team has six hygienists. Our team has six hygienists. Our team has six hygienists. Our team has six hygienists. Our team has six hygienists. Our team has six hygienists. Our team has six hygienists. Our team has six hygienists. Our team has six hygienists. Our team has six hygienists. Our team has six hygienists. Our team has six hygienists. Our team has six hygienists. Our team has six hygienists. Our team has six hygienists. Our team has six hygienists. Our team has six hygienists."
+   },
+   "domain": {
+    "observed_at": "2026-09-19T00:00:00+00:00",
+    "source": "https://northgate-dental.example/",
+    "status": "present",
+    "value": "northgate-dental.example"
+   },
+   "final_url": {
+    "observed_at": "2026-09-19T00:00:00+00:00",
+    "source": "https://northgate-dental.example/",
+    "status": "present",
+    "value": "https://northgate-dental.example/"
+   },
+   "homepage_text": {
+    "observed_at": "2026-09-19T00:00:00+00:00",
+    "source": "https://northgate-dental.example/",
+    "status": "present",
+    "value": "\"\nAbout UsOur ServicesContact\n\nNorthgate Dental Care is an independently owned family practice. We have cleaned teeth on this corner since 1998. We do not place implants.\n\nNorthgate Dental Care is an independently owned family practice. We have cleaned teeth on this corner since 1998. We do not place implants.\n\nNorthgate Dental Care is an independently owned family practice. We have cleaned teeth on this corner since 1998. We do not place implants.\n\nNorthgate Dental Care is an independently owned family practice. We have cleaned teeth on this corner since 1998. We do not place implants.\n\nNorthgate Dental Care is an independently owned family practice. We have cleaned teeth on this corner since 1998. We do not place implants.\n\nNorthgate Dental Care is an independently owned family practice. We have cleaned teeth on this corner since 1998. We do not place implants.\n\n\u00a9 2026 Northgate Dental Care PLLC. All rights reserved."
+   },
+   "http_status": {
+    "observed_at": "2026-09-19T00:00:00+00:00",
+    "source": "https://northgate-dental.example/",
+    "status": "present",
+    "value": 200
+   },
+   "legal_entity_footer": {
+    "observed_at": "2026-09-19T00:00:00+00:00",
+    "source": "https://northgate-dental.example/",
+    "status": "present",
+    "value": "\u00a9 2026 Northgate Dental Care PLLC. All rights reserved."
+   },
+   "nav_labels": {
+    "observed_at": "2026-09-19T00:00:00+00:00",
+    "source": "https://northgate-dental.example/",
+    "status": "present",
+    "value": [
+     "About Us",
+     "Our Services",
+     "Contact"
+    ]
+   },
+   "og_site_name": {
+    "observed_at": "2026-09-19T00:00:00+00:00",
+    "source": "https://northgate-dental.example/",
+    "status": "present",
+    "value": "Northgate Dental Care"
+   },
+   "ownership_disclosure_text": {
+    "observed_at": "2026-09-19T00:00:00+00:00",
+    "source": "https://northgate-dental.example/",
+    "status": "present",
+    "value": "\" About UsOur ServicesContact Northgate Dental Care is an independently owned family practice. Northgate Dental Care is an independently owned family practice. Northgate Dental Care is an independently owned family practice. Northgate Dental Care is an independently owned family practice. Northgate Dental Care is an independently owned family practice. Northgate Dental Care is an independently owned family practice."
+   },
+   "schema_org_name": {
+    "observed_at": "2026-09-19T00:00:00+00:00",
+    "source": "https://northgate-dental.example/",
+    "status": "present",
+    "value": "Northgate Dental Care"
+   },
+   "services_text": {
+    "observed_at": "2026-09-19T00:00:00+00:00",
+    "source": "https://northgate-dental.example/services (services page, linked as 'Our Services')",
+    "status": "present",
+    "value": "Cleanings, crowns and whitening. Cleanings, crowns and whitening. Cleanings, crowns and whitening. Cleanings, crowns and whitening. Cleanings, crowns and whitening. Cleanings, crowns and whitening. Cleanings, crowns and whitening. Cleanings, crowns and whitening. Cleanings, crowns and whitening. Cleanings, crowns and whitening. Cleanings, crowns and whitening. Cleanings, crowns and whitening. Cleanings, crowns and whitening. Cleanings, crowns and whitening. Cleanings, crowns and whitening. Cleanings, crowns and whitening. Cleanings, crowns and whitening. Cleanings, crowns and whitening. Cleanings, crowns and whitening. Cleanings, crowns and whitening."
+   }
+  }
+ },
+ "packet_version": "1.0",
+ "record_source": "companies.csv:2",
+ "richness": {
+  "kind": "company",
+  "missing_required": [],
+  "present_fields": [
+   "record.city",
+   "record.domain",
+   "record.name",
+   "record.state",
+   "registry.as_of",
+   "registry.entity_type",
+   "registry.source",
+   "registry.status",
+   "registry.taxonomy_code",
+   "registry.taxonomy_desc",
+   "site.about_text",
+   "site.domain",
+   "site.final_url",
+   "site.homepage_text",
+   "site.http_status",
+   "site.legal_entity_footer",
+   "site.nav_labels",
+   "site.og_site_name",
+   "site.ownership_disclosure_text",
+   "site.schema_org_name",
+   "site.services_text"
+  ],
+  "tier": "rich"
+ },
+ "rounds": [
+  {
+   "missing_required": [],
+   "present_fields": 21,
+   "round": 1,
+   "tier": "rich"
+  }
+ ]
+}

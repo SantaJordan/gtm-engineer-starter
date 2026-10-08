@@ -1,0 +1,28 @@
+{
+  "result_count": 1,
+  "results": [
+    {
+      "enumeration_type": "NPI-2",
+      "number": "0000000000",
+      "last_updated_epoch": 1710000000,
+      "basic": {
+        "organization_name": "RIVERMARK FAMILY DENTAL PLLC",
+        "status": "A",
+        "organizational_subpart": "N",
+        "parent_organization_legal_business_name": "HARBORLINE DENTAL PARTNERS LLC",
+        "last_updated": "2026-03-09"
+      },
+      "taxonomies": [
+        {"code": "1223G0001X", "taxonomy_group": "", "desc": "Dentist - General Practice",
+         "state": "NC", "license": "D-00001", "primary": true},
+        {"code": "1223X0400X", "taxonomy_group": "", "desc": "Dentist - Orthodontics and Dentofacial Orthopedics",
+         "state": "NC", "license": "D-00002", "primary": false}
+      ],
+      "addresses": [
+        {"country_code": "US", "address_purpose": "LOCATION", "address_1": "123 Example St",
+         "city": "EXAMPLETON", "state": "NC", "postal_code": "000000000",
+         "telephone_number": "(555)555-0134"}
+      ]
+    }
+  ]
+}

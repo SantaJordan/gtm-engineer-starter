@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gtm-engineer-starter.example/schemas/dossier-builder/tiebreaker.schema.json",
+  "title": "Tiebreaker",
+  "description": "A human decision captured during a wave's pause gate. Append-only — every decision becomes part of the dossier audit trail.",
+  "type": "object",
+  "required": ["question_id", "wave", "prompt", "answer", "answered_by", "answered_at", "applied_to"],
+  "additionalProperties": false,
+  "properties": {
+    "question_id": {"type": "string", "description": "Stable id, e.g. 'W2b-Q1'"},
+    "wave": {"type": "string", "description": "e.g. 'W2b'"},
+    "prompt": {"type": "string", "description": "Verbatim question shown to the human"},
+    "options_offered": {"type": "array", "items": {"type": "string"}},
+    "answer": {"type": "string"},
+    "answer_notes": {"type": "string", "description": "Free text the human added"},
+    "answered_by": {"type": "string", "description": "User identifier (email or name)"},
+    "answered_at": {"type": "string", "format": "date-time"},
+    "applied_to": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Record IDs / fields the answer applies to. Empty if global."
+    }
+  }
+}

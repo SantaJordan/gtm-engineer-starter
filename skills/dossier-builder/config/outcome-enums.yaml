@@ -1,0 +1,41 @@
+# Outcome enum vocabularies per mode.
+# Strictly enforced — the dossier schema constrains values.
+
+customer:
+  - value: active
+    description: "Currently paying, recent activity within tenant-defined activity window (default 90d)."
+    derivation_rule: "billing.subscription_state='active' AND last_activity_within_90d"
+
+  - value: paying_silent
+    description: "Currently paying but no activity in window. Worth surfacing."
+    derivation_rule: "billing.subscription_state='active' AND no_activity_in_90d"
+
+  - value: cancelled
+    description: "Cancellation completed (period_end passed). MRR=0."
+    derivation_rule: "billing.cancelled_event AND period_end < today"
+
+  - value: prospect
+    description: "Sentinel for accounts surfaced as customer-mode but never actually closed-won. Likely data error or pre-conversion state."
+    derivation_rule: "no opportunity_won, no billing record"
+
+  - value: unknown
+    description: "Derivation cascade exhausted; outcome cannot be determined. Always surfaced as flag."
+    derivation_rule: "fallback when none of the above match"
+
+prospect:
+  - value: open
+    description: "Active opportunity, not yet won or lost."
+    derivation_rule: "any opportunity with stage NOT IN [closed_won, closed_lost]"
+
+  - value: lost
+    description: "Most recent opportunity is closed_lost."
+    derivation_rule: "MAX(opportunity by date).stage = closed_lost"
+
+  - value: won_recently_flipped
+    description: "Closed-won in last 30 days. Treated as prospect mode for backward-test purposes; will land in customer corpus on next refresh."
+    derivation_rule: "closed_won within last 30 days"
+
+# Severity escalation rules
+unknown_severity:
+  customer: warn   # paradox flag if we have data but can't derive
+  prospect: note

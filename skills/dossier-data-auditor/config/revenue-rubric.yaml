@@ -1,0 +1,94 @@
+version: 1
+
+# Per-cluster canonical-pick rubric. revenue_reconcile.py clusters revenue_like
+# columns into concept groups, then scores each candidate per the rules below.
+# Highest score wins per cluster; the runner-up is surfaced when score margin
+# is < 2.0 so the human can override.
+
+selection_rules:
+  - id: highest_fill_rate
+    description: "Fill rate is the strongest single signal."
+    weight: 10.0
+    type: fill_rate_normalized
+
+  - id: do_not_use_demotion
+    description: "Demote any column on engagement.do_not_use_fields[] (from W0 capture) or matching well-known do-not-use patterns."
+    weight: -100.0
+    blocking: true
+    known_patterns:
+      - 'Account.Revenue_Rollup__c'    # example: a rollup whose integration silently stopped — always zero
+      - 'Opportunity.Amount'                     # deal value, not MRR — surface but never pick as MRR
+      - 'Account.AnnualRevenue'                  # ZoomInfo-stamped, often stale
+
+  - id: round_number_demotion
+    description: "Demote columns where ≥10% of values cluster on round numbers — estimates, not actuals."
+    threshold_pct: 0.10
+    round_values: [1000, 5000, 10000, 50000, 100000, 500000, 1000000]
+    weight: -3.0
+
+  - id: source_reputation
+    description: "Billing > CRM > CSM > marketing > scraped."
+    weight: 2.0
+    rank:
+      billing: 5
+      crm: 4
+      csm: 3
+      marketing: 2
+      scraped: 1
+
+  - id: recency_tiebreaker
+    description: "Prefer the column from the most-recently-updated source file."
+    weight: 1.0
+    use_when: tied
+    days_to_zero: 365
+
+  - id: benfords_law_check
+    description: "Penalize columns whose first-digit distribution fails Benford's law (χ² p<0.01)."
+    weight: -2.0
+    apply_to_clusters: [probable_mrr, probable_arr, probable_deal_amount, probable_historical_total]
+
+  - id: apple_at_20_penalty
+    description: "Brand-name account with MRR <$1K is a join error — penalize the column it appears in."
+    brand_names: [Apple, Microsoft, Google, Amazon, Walmart, JPMorgan, Goldman, Tesla, Meta, Netflix, Adobe, Salesforce, Oracle, IBM, Intel, Stripe, Shopify]
+    mrr_threshold_usd: 1000
+    weight: -2.0
+
+  - id: round_cluster_modal_spike
+    description: "Demote columns where >5% of values share the same modal round number (default/placeholder pattern)."
+    weight: -2.0
+
+conflict_block_thresholds:
+  pct_records_disagreeing: 0.05
+  by_amount_pct: 0.10
+  action: pause_and_surface
+
+unit_mismatch_check:
+  ratio_threshold: 1000
+  min_overlap_records: 100
+  action: flag_warn
+
+concept_clusters:
+  - id: probable_mrr
+    keywords: [mrr, monthly_revenue, monthly_recurring, MRR_Canonical, Net_MRR, recurring_monthly]
+    typical_unit: usd_per_month
+
+  - id: probable_arr
+    keywords: [arr, annual_recurring, annual_revenue, AnnualRevenue]
+    typical_unit: usd_per_year
+
+  - id: probable_deal_amount
+    keywords: [Opportunity.Amount, deal_value, contract_value, ACV, TCV]
+    typical_unit: usd_one_time
+    do_not_use_for_recurring: true
+
+  - id: probable_historical_total
+    keywords: [total_revenue, total_revenue_t12m, total_revenue_ytd, lifetime_revenue, LTV]
+    typical_unit: usd_cumulative
+
+  - id: probable_payment_volume
+    keywords: [total_payments, gmv, gross_processed, total_medicare_payments, charges_total]
+    typical_unit: usd_cumulative
+
+  - id: probable_count_proxy
+    keywords: [total_drivers, trucks, total_patients, num_seats, num_units, num_locations]
+    typical_unit: count

@@ -1,0 +1,64 @@
+# GTM Engineer Starter
+
+> An open-source starter kit for go-to-market engineering with Claude Code or Codex. It builds account dossiers from CRM, call and billing data, labels customers Won / Lost / 10X, turns the result into ICP rules, scores a prospect list with evidence packets and the Jev calibrated judge, and drafts PVP messages. A fictional worked example runs end to end with no API keys.
+
+Read START-HERE.md first: it is the method in order, with the command, inputs, outputs and decision rule for each step. Run `make check` to run every test suite, the offline smoke test and the offline replay of the whole method. Run every command from the repo root. All example data is fictional and uses `.example` domains. `jev_client.ask()` in skills/calibrated-judge/scripts/jev_client.py is the only door to Jev; do not call TypeSafe or OpenRouter directly elsewhere. Keep skills/crawford/ and skills/calibrated-judge/ as sibling folders.
+
+## Start
+
+- [START-HERE.md](START-HERE.md): the method, step 0 to 10, for people and agents
+- [README.md](README.md): what the repo is and the quick start
+- [examples/README.md](examples/README.md): the acceptance check and which steps need which key, with costs
+- [examples/northwind-demo/README.md](examples/northwind-demo/README.md): the fictional worked example and what each step shows
+- [examples/northwind-demo/replay.py](examples/northwind-demo/replay.py): offline replay of steps 3 to 10 through the real phase code, with recorded API responses
+
+## Foundation
+
+- [foundation/wiki-pattern.md](foundation/wiki-pattern.md): the LLM-maintained wiki (raw sources, entities, concepts, syntheses, lifecycle states)
+- [foundation/connect-your-context.md](foundation/connect-your-context.md): describe your systems, pull data in bulk with CLIs or scripts, drop exports into wiki/raw/
+- [foundation/push-to-github.md](foundation/push-to-github.md): keep the project in a private GitHub repo; checks before anything goes public
+- [foundation/template/CLAUDE.md](foundation/template/CLAUDE.md): project template with a systems table and wiki skeleton
+
+## Skills
+
+- [skills/dossier-data-auditor/SKILL.md](skills/dossier-data-auditor/SKILL.md): audit customer data before a dossier build (columns, joins, domains, revenue)
+- [skills/dossier-builder/SKILL.md](skills/dossier-builder/SKILL.md): build per-account dossiers joining every system into one timeline with provenance
+- [skills/win-loss-rewind/SKILL.md](skills/win-loss-rewind/SKILL.md): Won / Lost / 10X; segments customers and finds signals that survive a holdout
+- [skills/crawford/SKILL.md](skills/crawford/SKILL.md): build evidence packets for a list of companies or people (free lanes first)
+- [skills/calibrated-judge/SKILL.md](skills/calibrated-judge/SKILL.md): score packets with Jev; accept, reject, review or insufficient per row
+- [skills/wiki-lint/SKILL.md](skills/wiki-lint/SKILL.md): weekly wiki health check (orphans, stale claims, contradictions)
+
+## Key scripts
+
+- [skills/crawford/scripts/build_packets.py](skills/crawford/scripts/build_packets.py): companies.csv + icp.json to one evidence packet per row; use --preview before any paid pass
+- [skills/calibrated-judge/scripts/judge_packets.py](skills/calibrated-judge/scripts/judge_packets.py): packets folder to scores.csv, review_queue.csv and review_cards.md
+- [skills/calibrated-judge/scripts/jev_client.py](skills/calibrated-judge/scripts/jev_client.py): the Jev client; `probe --no-cache` checks a key with one tiny call
+- [skills/dossier-builder/scripts/validate_schema.py](skills/dossier-builder/scripts/validate_schema.py): schema gate and forbidden-word check for dossiers
+- [skills/dossier-data-auditor/scripts/scan.py](skills/dossier-data-auditor/scripts/scan.py): classify every column in a data folder and propose joins
+- [skills/dossier-data-auditor/scripts/join_test.py](skills/dossier-data-auditor/scripts/join_test.py): test proposed joins, strip the seller's own domain, gate PASS or BLOCK
+- [skills/win-loss-rewind/scripts/run_init.py](skills/win-loss-rewind/scripts/run_init.py): phase 0, data archaeology on the customer CSV
+- [skills/win-loss-rewind/scripts/orchestrate.py](skills/win-loss-rewind/scripts/orchestrate.py): phases 1 to 7 of Won / Lost / 10X
+- [examples/check.py](examples/check.py): offline smoke test of each tool (no keys, no network)
+- [skills/calibrated-judge/scripts/quantify.py](skills/calibrated-judge/scripts/quantify.py): rank accepted rows by one number read from each packet
+- [skills/calibrated-judge/scripts/check_precision.py](skills/calibrated-judge/scripts/check_precision.py): label ~30 rows by hand and measure the judge's accept precision
+- [skills/_shared/project_env.py](skills/_shared/project_env.py): the one loader that reads `<project root>/.env` for the auditor, builder and Crawford scripts (a real environment variable wins)
+- [skills/win-loss-rewind/scripts/adapters/transcripts_md.py](skills/win-loss-rewind/scripts/adapters/transcripts_md.py): import markdown call transcripts (the non-Gong path) with speaker attribution
+
+## Contracts
+
+- [skills/crawford/references/evidence-packet.md](skills/crawford/references/evidence-packet.md): the evidence-packet contract (fields, caps, absences)
+- [skills/dossier-builder/schemas/dossier.customer.schema.json](skills/dossier-builder/schemas/dossier.customer.schema.json): the customer dossier JSON Schema
+- [skills/win-loss-rewind/scripts/wlr_schema.py](skills/win-loss-rewind/scripts/wlr_schema.py): the customer and archetype contracts between win-loss-rewind phases (verified outcome, 10X, holdout membership)
+- [skills/win-loss-rewind/references/free-source-discovery.md](skills/win-loss-rewind/references/free-source-discovery.md): find free, dated sources for a signal, with a verified worked example
+- [skills/dossier-builder/references/speaker-attribution-protocol.md](skills/dossier-builder/references/speaker-attribution-protocol.md): never count seller speech as customer voice
+
+## Setup
+
+- [.env.example](.env.example): every key name the repo reads, no values
+- [requirements.txt](requirements.txt): Python packages
+- [TOOLS.md](TOOLS.md): tools and vendors with links
+
+## Optional
+
+- [NOT-INCLUDED.md](NOT-INCLUDED.md): what annual On the Edge subscribers get that this repo leaves out
+- [LICENSE](LICENSE): MIT

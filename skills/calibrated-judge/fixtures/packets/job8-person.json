@@ -1,0 +1,152 @@
+{
+ "_fixture": "A real scripts/build_packets.py (Job 8) output over a SYNTHETIC page cache. Every entity and person here is invented. Regenerate from the crawford skill's tests/test_build_packets.py fixtures.",
+ "built_at": "2026-09-19T00:00:00+00:00",
+ "job": "build_packets",
+ "key": "p-35d2fb460342",
+ "kind": "person",
+ "lanes": {
+  "maps": false,
+  "profile": true,
+  "profile_reason": null,
+  "registry": true
+ },
+ "packet": {
+  "absent": {
+   "profile.licenses": {
+    "reason": "the provider returned no licences or certifications",
+    "status": "absent"
+   },
+   "profile.open_to_work": {
+    "reason": "the provider does not return the open-to-work flag",
+    "status": "absent"
+   }
+  },
+  "built_at": "2026-09-19T00:00:00+00:00",
+  "company_identity": {
+   "domain": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "people.csv:2",
+    "status": "present",
+    "value": "northgate-dental.example"
+   },
+   "final_url": {
+    "observed_at": "2026-09-19T00:00:00+00:00",
+    "source": "https://northgate-dental.example/",
+    "status": "present",
+    "value": "https://northgate-dental.example/"
+   },
+   "legal_entity_footer": {
+    "observed_at": "2026-09-19T00:00:00+00:00",
+    "source": "https://northgate-dental.example/",
+    "status": "present",
+    "value": "\u00a9 2026 Northgate Dental Care PLLC. All rights reserved."
+   },
+   "name": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "people.csv:2",
+    "status": "present",
+    "value": "Northgate Dental Care"
+   },
+   "og_site_name": {
+    "observed_at": "2026-09-19T00:00:00+00:00",
+    "source": "https://northgate-dental.example/",
+    "status": "present",
+    "value": "Northgate Dental Care"
+   },
+   "schema_org_name": {
+    "observed_at": "2026-09-19T00:00:00+00:00",
+    "source": "https://northgate-dental.example/",
+    "status": "present",
+    "value": "Northgate Dental Care"
+   }
+  },
+  "entity_key": "p-35d2fb460342",
+  "kind": "person",
+  "packet_version": "1.0",
+  "profile": {
+   "about": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "https://linkedin.example/in/dana-reyes",
+    "status": "present",
+    "value": "I have run a two-chair practice for twenty years."
+   },
+   "current_experiences": {
+    "current_role_count": 1,
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "https://linkedin.example/in/dana-reyes",
+    "status": "present",
+    "value": [
+     {
+      "company": "Northgate Dental Care",
+      "dates_text": "2004-06 \u2013 present (no end date on the profile)",
+      "provider_current": true,
+      "title": "Owner"
+     }
+    ]
+   },
+   "headline": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "https://linkedin.example/in/dana-reyes",
+    "status": "present",
+    "value": "Owner at Northgate Dental Care"
+   },
+   "location": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "https://linkedin.example/in/dana-reyes",
+    "status": "present",
+    "value": "Springfield IL"
+   },
+   "prior_role": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "https://linkedin.example/in/dana-reyes",
+    "status": "present",
+    "value": "Associate \u2014 Elm Dental \u2014 1999-01 \u2013 2004-05"
+   },
+   "scrape_as_of": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "https://linkedin.example/in/dana-reyes",
+    "status": "present",
+    "value": "2026-09-19T02:36:04+00:00"
+   }
+  },
+  "record": {
+   "linkedin_url": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "people.csv:2",
+    "status": "present",
+    "value": "https://linkedin.example/in/dana-reyes"
+   },
+   "name": {
+    "observed_at": "2026-09-19T02:36:04+00:00",
+    "source": "people.csv:2",
+    "status": "present",
+    "value": "Dana Reyes"
+   }
+  }
+ },
+ "packet_version": "1.0",
+ "record_source": "people.csv:2",
+ "richness": {
+  "kind": "person",
+  "missing_required": [],
+  "present_fields": [
+   "profile.about",
+   "profile.current_experiences",
+   "profile.headline",
+   "profile.location",
+   "profile.prior_role",
+   "profile.scrape_as_of",
+   "record.linkedin_url",
+   "record.name"
+  ],
+  "tier": "rich"
+ },
+ "rounds": [
+  {
+   "missing_required": [],
+   "present_fields": 8,
+   "round": 1,
+   "tier": "rich"
+  }
+ ]
+}

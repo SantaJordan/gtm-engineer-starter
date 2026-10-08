@@ -1,0 +1,95 @@
+{
+  "_note": "Recorded phase-5 model output, applied to every archetype. H-growing must be rejected at Gate 1 (generic). H-headcount must be rejected at Gate 4: employees_count is numeric and the hypothesis gives no threshold.",
+  "hypotheses": [
+    {
+      "hypothesis_id": "H-multi-office",
+      "signal": "the practice homepage says it runs two or more offices",
+      "observability_source": "firecrawl_scrape",
+      "queryable_field": "location_count",
+      "predicate": {
+        "op": "gte",
+        "value": 2
+      },
+      "rationale_from_phase_4_themes": [
+        {
+          "phase_4_phrase": "nobody at the other offices can see the open chairs"
+        }
+      ],
+      "temporal_provability": {
+        "best_case_tag": "ARCHIVED_BEFORE",
+        "how": "an archived homepage dated before the close date listing the offices"
+      },
+      "archive_search_pattern": "offices"
+    },
+    {
+      "hypothesis_id": "H-new-office-news",
+      "signal": "a news item reports the practice opening another office",
+      "observability_source": "serper_news",
+      "queryable_field": "items.snippet",
+      "predicate": {
+        "op": "regex",
+        "value": "opened (its|a|their) (second|third|fourth|fifth|sixth|new) (office|location)"
+      },
+      "record_date_field": "items.date",
+      "rationale_from_phase_4_themes": [
+        {
+          "phase_4_phrase": "nobody at the other offices can see the open chairs"
+        }
+      ],
+      "temporal_provability": {
+        "best_case_tag": "RECORD_DATED_BEFORE",
+        "how": "the news item's publication date, plus one day of lag"
+      }
+    },
+    {
+      "hypothesis_id": "H-online-booking",
+      "signal": "the practice homepage offers online appointment booking",
+      "observability_source": "firecrawl_scrape",
+      "queryable_field": "mentions_online_booking",
+      "rationale_from_phase_4_themes": [
+        {
+          "phase_4_phrase": "patients keep asking to book online"
+        }
+      ],
+      "temporal_provability": {
+        "best_case_tag": "ARCHIVED_BEFORE",
+        "how": "an archived homepage dated before the close date with the booking link"
+      },
+      "archive_search_pattern": "book an appointment online"
+    },
+    {
+      "hypothesis_id": "H-growing",
+      "signal": "growing practices",
+      "observability_source": "apify_linkedin",
+      "queryable_field": "employees_count",
+      "predicate": {
+        "op": "gte",
+        "value": 20
+      },
+      "rationale_from_phase_4_themes": [
+        {
+          "phase_4_phrase": "nobody at the other offices can see the open chairs"
+        }
+      ],
+      "temporal_provability": {
+        "best_case_tag": "RETRO_ASSUMED",
+        "how": "current headcount"
+      }
+    },
+    {
+      "hypothesis_id": "H-headcount",
+      "signal": "practice headcount on LinkedIn",
+      "observability_source": "apify_linkedin",
+      "queryable_field": "employees_count",
+      "rationale_from_phase_4_themes": [
+        {
+          "phase_4_phrase": "nobody at the other offices can see the open chairs"
+        }
+      ],
+      "temporal_provability": {
+        "best_case_tag": "RETRO_ASSUMED",
+        "how": "current headcount"
+      }
+    }
+  ]
+}

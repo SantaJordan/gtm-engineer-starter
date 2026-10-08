@@ -1,0 +1,310 @@
+version: 1
+
+# Inherits the 25-check catalog from the sibling skill:
+inherits: ../../dossier-builder/config/dq-checks.yaml
+
+# The 18 new checks the auditor adds on top of the sibling catalog. Each is
+# falsifiable (named metric, named threshold, named sample size). Severities:
+#   block   - hard refusal until written override
+#   warn    - surface in panel; user can wave through
+#   note    - log only; surface only in scorecard
+checks:
+
+  # ---------- domain_canonicalization (cross-column + state) ----------
+  - id: domain_field_pairwise_agreement
+    family: domain_canonicalization
+    severity: warn
+    applies_to: raw
+    spec:
+      etld_plus_one: true
+      min_pct_disagreeing: 0.05
+    description: "Across the URL-like columns (Website, homepage_url, domain, email-inferred-domain, linkedin_url, additional_domains), ≥5% of accounts have ≥2 different eTLD+1 canonical roots."
+
+  - id: domain_state_parked_or_sale
+    family: domain_canonicalization
+    severity: block
+    applies_to: raw
+    spec:
+      fingerprints: [sedo.com, afternic, godaddy auctions, hugedomains, bodis, 'this domain is for sale', 'inquire about this domain', 'make an offer']
+      sample_size: 200
+    description: "Page render returns parking-page fingerprints. Block — this domain belongs to no one and using it as canonical poisons every join."
+
+  - id: domain_state_dead_nxdomain
+    family: domain_canonicalization
+    severity: warn
+    applies_to: raw
+    spec:
+      dns_lookup: true
+      max_pct_dead: 0.05
+    description: ">5% of canonical-picked domains fail DNS lookup."
+
+  - id: domain_state_acquired_repointed
+    family: domain_canonicalization
+    severity: warn
+    applies_to: raw
+    spec:
+      follow_redirects: true
+      fuzzy_match_threshold: 0.60
+      sample_size: 100
+    description: "Redirect chain terminates at a domain whose page content doesn't fuzzy-match the account_name — M&A, rebrand, or domain repointing."
+
+  - id: domain_platform_subdomain_as_canonical
+    family: domain_canonicalization
+    severity: warn
+    applies_to: raw
+    spec:
+      platforms: ['.salesforce.com', '.lightning.force.com', '.hubspot.com', '.myshopify.com', '.shopify.com', '.zendesk.com', '.freshdesk.com', '.atlassian.net']
+    description: "Canonical domain pick resolved to a tenant subdomain of a SaaS platform; strip to platform_root, surface for re-resolution."
+
+  - id: multi_tenant_domain_overuse
+    family: domain_canonicalization
+    severity: warn
+    applies_to: raw
+    spec:
+      min_distinct_accounts_per_domain: 5
+    description: "A 'company domain' appears on >5 distinct accounts in the customer base (accenture.com, deloitte.com, capgemini.com). Cannot be used as a join key."
+
+  # ---------- cross_field_paradox ----------
+  - id: employee_range_revenue_implausible
+    family: cross_field_paradox
+    severity: warn
+    applies_to: raw
+    spec:
+      table:
+        "1-10":     { revenue_max_usd: 5000000 }
+        "11-50":    { revenue_min_usd: 250000,   revenue_max_usd: 50000000 }
+        "51-200":   { revenue_min_usd: 2000000,  revenue_max_usd: 200000000 }
+        "201-1000": { revenue_min_usd: 10000000 }
+        "1001+":    { revenue_min_usd: 50000000 }
+      sigma_threshold: 5
+    description: "Employee range and revenue are inconsistent. The 11-50 emp + $1M revenue case is borderline; 11-50 + $100K is clearly wrong."
+
+  - id: industry_revenue_implausible
+    family: cross_field_paradox
+    severity: warn
+    applies_to: raw
+    spec:
+      use_industry_medians: true
+      sigma_threshold: 4
+    description: "Revenue >4σ from industry median (single-clinic FQHC reporting $500M)."
+
+  - id: geo_phone_mismatch
+    family: cross_field_paradox
+    severity: note
+    applies_to: raw
+    spec:
+      area_code_lookup: true
+      min_pct_offending: 0.05
+    description: "HQ state and phone area code disagree on ≥5% of records — phone field probably reused as personal contact."
+
+  - id: healthcare_npi_revenue_paradox
+    family: cross_field_paradox
+    severity: note
+    applies_to: raw
+    spec:
+      vertical: healthcare
+      npi_required_for_payments: true
+    description: "Account flagged as healthcare provider but no NPI and a Medicare-payment claim — verify against CMS NPI registry."
+
+  - id: id_format_inconsistent_within_column
+    family: cross_field_paradox
+    severity: warn
+    applies_to: raw
+    spec:
+      detect_mixed_formats: true
+    description: "ID column mixes formats (SFDC 15-char + 18-char + stray 12-char). Convert/normalize before joining."
+
+  # ---------- column_quality_pentad (W5) ----------
+  - id: benfords_law_revenue
+    family: column_quality_pentad
+    severity: warn
+    applies_to: raw
+    spec:
+      chi_squared_p_threshold: 0.01
+      min_rows: 500
+    description: "First-digit distribution of a revenue column deviates from Benford's law (χ² p < 0.01). Synthetic / placeholder / hand-typed revenue."
+
+  - id: modal_value_spike_any_column
+    family: column_quality_pentad
+    severity: warn
+    applies_to: raw
+    spec:
+      top1_value_frequency_min_pct: 0.05
+      min_rows_at_modal_value: 50
+    description: "Top-1 value frequency >5% of populated rows AND >50 rows share it. Catches the 1,000-identical-tenure pattern in any column."
+
+  - id: bimodal_distribution_test
+    family: column_quality_pentad
+    severity: note
+    applies_to: raw
+    spec:
+      hartigan_dip_p_threshold: 0.05
+    description: "Numeric column bimodal — accidentally-merged source files with different scale conventions."
+
+  - id: column_pair_perfect_correlation
+    family: column_quality_pentad
+    severity: warn
+    applies_to: raw
+    spec:
+      spearman_rho_threshold: 0.99
+      exclude_id_pairs: true
+    description: "Spearman ρ >0.99 on any two numeric columns in same file — one is a derived/stale copy of the other."
+
+  - id: cardinality_vs_uniqueness_mismatch
+    family: column_quality_pentad
+    severity: warn
+    applies_to: raw
+    spec:
+      id_class_min_cardinality_ratio: 0.5
+      enum_class_max_unique: 50
+    description: "Column declared 'id' has cardinality/row-count < 0.5 OR column declared 'enum' has > 50 unique values. Schema-vs-reality drift."
+
+  - id: value_length_truncation
+    family: column_quality_pentad
+    severity: warn
+    applies_to: raw
+    spec:
+      min_pct_at_declared_max_length: 0.01
+    description: ">1% of values in a VARCHAR(N) column have length exactly N. Silent Excel/DB truncation."
+
+  - id: scientific_notation_in_id_columns
+    family: column_quality_pentad
+    severity: block
+    applies_to: raw
+    spec:
+      regex: '\d+E[+-]\d+'
+    description: "Any value matching scientific-notation regex in a column where other values look like IDs. Excel-roundtrip-destroyed IDs."
+
+  - id: mixed_date_format
+    family: column_quality_pentad
+    severity: warn
+    applies_to: raw
+    spec:
+      formats: [iso_8601, 'mm/dd/yyyy', 'dd/mm/yyyy']
+      ambiguity_check: true
+    description: "Same column has ISO-8601 AND MM/DD/YYYY values. DD-vs-MM ambiguity silently mismaps half your dates."
+
+  - id: epoch_or_sentinel_dates
+    family: column_quality_pentad
+    severity: warn
+    applies_to: raw
+    spec:
+      sentinels: ['1970-01-01', '9999-12-31', '2099-12-31', '1900-01-01']
+      max_pct: 0.001
+    description: "Sentinel-as-real-data."
+
+  - id: currency_mixing
+    family: column_quality_pentad
+    severity: warn
+    applies_to: raw
+    spec:
+      patterns: ['^\d+\.\d+$', '^\d+,\d+\.\d+$', '^\$\d+', '€\d+', '£\d+']
+      min_format_diversity: 2
+    description: "Numeric column has multiple currency formats. Multi-locale CSV concatenation."
+
+  - id: null_encoding_diversity
+    family: column_quality_pentad
+    severity: warn
+    applies_to: raw
+    spec:
+      encodings: ['NULL', '', 'N/A', 'Unknown', '0', '-', 'TBD', 'Pending', 'n/a', 'NaN']
+      min_encodings_present: 2
+    description: ">1 NULL-like encoding present in same column. NULL-semantic ambiguity."
+
+  - id: bulk_write_signature_per_column
+    family: column_quality_pentad
+    severity: warn
+    applies_to: raw
+    spec:
+      min_pct_at_modal_last_modified: 0.05
+      last_modified_field_required: true
+    description: ">5% of populated rows share identical LastModifiedDate to the second. Backfilled-and-dead column. Cohort fit verdict goes to 'dead' regardless of fill rate."
+
+  # ---------- intra_source_dedup ----------
+  - id: intra_source_dedup_likelihood
+    family: intra_source_dedup
+    severity: note
+    applies_to: raw
+    spec:
+      name_fuzzy_threshold: 0.92
+      require_domain_match: true
+      require_non_overlapping_non_null_fields: true
+    description: "Within one source, pair of rows where (name fuzzy ≥0.92 AND domain match AND non-overlapping non-null fields). Apple-as-47-records within one system."
+
+  # ---------- cohort_expectation ----------
+  - id: cohort_count_vs_user_expectation
+    family: cohort_expectation
+    severity: warn
+    applies_to: linked
+    spec:
+      mismatch_threshold_pct: 0.10
+    description: "Actual loaded count vs user's stated expected count at W0. >10% mismatch surfaces."
+
+  # ---------- hierarchy ----------
+  - id: hierarchy_self_parent
+    family: hierarchy
+    severity: warn
+    applies_to: raw
+    spec:
+      check: parent_id_equals_id
+    description: "Any row where ParentId = Id. Botched data load."
+
+  - id: hierarchy_orphan_child_with_revenue
+    family: hierarchy
+    severity: note
+    applies_to: linked
+    spec:
+      child_has_subscriptions_but_no_calls: true
+    description: "Child account has subscriptions but no calls; parent has calls but no subscriptions. Split-signal rollup pattern."
+
+  - id: hierarchy_dba_collision_among_siblings
+    family: hierarchy
+    severity: note
+    applies_to: raw
+    spec:
+      normalized_name_match: true
+    description: "Two child accounts of same parent share normalized name. Likely the same entity pre-M&A."
+
+  - id: hierarchy_depth_tail_anomaly
+    family: hierarchy
+    severity: warn
+    applies_to: raw
+    spec:
+      max_depth_allowed: 5
+    description: "Hierarchy chain length > 5 — usually circular or junk."
+
+  # ---------- multi_provider_cross_check ----------
+  - id: domain_company_provider_disagreement
+    family: multi_provider_cross_check
+    severity: warn
+    applies_to: linked
+    spec:
+      providers: [blitz, openwebninja_ai_mode, firecrawl, serper, exa]
+      min_agreement: 2
+      sample_size: 200
+    description: "For 200 stratified-sampled domains, query ≥3 providers. Flag any where <2 of N agree on the company name."
+
+  - id: icp_cohort_multi_provider_sanity
+    family: multi_provider_cross_check
+    severity: warn
+    applies_to: linked
+    spec:
+      primary: parallel_task_group_base
+      sample_size: 200
+      second_opinion_threshold: 0.60
+      second_opinion: exa_agent_beta
+      tertiary: perplexity_sonar_pro
+      typical_cost_usd: 8
+    description: "Parallel Task Group of 200 records with structured ICP schema (Basis citation per row). Rows with confidence <0.6 escalate to Exa Agent (beta, header Exa-Beta: agent-2026-05-07) for independent semantic-index second opinion."
+
+  - id: paradox_resolution_cited
+    family: multi_provider_cross_check
+    severity: note
+    applies_to: linked
+    spec:
+      primary: parallel_task_core
+      secondary: exa_agent_beta
+      cost_cap_usd: 15.0
+      max_paradoxes: 50
+      require_citations: true
+    description: "Per-record paradox resolution via Parallel Task Core. Exa Agent on disputed/low-confidence rows. Hard cap at 50 paradoxes / $15."

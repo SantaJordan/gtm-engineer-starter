@@ -1,0 +1,242 @@
+version: 1
+
+# Per-use-case provider routing. Blitz-first (unlimited). OpenWebNinja and
+# Parallel.ai second tier. RapidAPI LinkedIn underneath linkedin-validator.
+# DiscoLike last-resort. Serper/Exa/Firecrawl for free or near-free tie-breaker
+# and page-render roles.
+
+use_cases:
+
+  domain_canonicalization_per_record:
+    description: "Verify per-record canonical domain across the full corpus (W2b)."
+    primary: blitz_domain_to_linkedin
+    secondary: openwebninja_ai_mode
+    tertiary: firecrawl_render
+    last_resort: discolike_match
+    min_agreement: 2
+
+  domain_to_linkedin_roundtrip:
+    description: "Domain → LinkedIn URL → domain. Closes the loop."
+    primary: blitz_domain_to_linkedin
+    secondary: rapidapi_linkedin_company
+
+  domain_state_classification:
+    description: "Parked / dead / acquired / tenant-subdomain detection (W2b)."
+    primary: firecrawl_render
+    secondary: openwebninja_ai_mode
+    tertiary: dns_resolve
+
+  multi_domain_consolidation:
+    description: "Detect one-parent-many-brands domain clusters (W2c)."
+    primary: blitz_companies_search
+    secondary: openwebninja_ai_mode
+    last_resort: discolike_subsidiaries
+
+  brand_vs_legal_name:
+    description: "Reconcile name variants per account (W1b)."
+    primary: blitz_companies_search
+    secondary: openwebninja_ai_mode
+    last_resort: exa_answer
+
+  icp_cohort_sample_200:
+    description: "200-row ICP-fit sample with Basis citations (W6)."
+    primary: parallel_task_group_base
+    secondary_threshold: 0.60
+    secondary: exa_agent_beta
+    tertiary: perplexity_sonar_pro
+    sample_size: 200
+    typical_total_cost_usd: 10
+    notes: "Parallel and Perplexity both crawl live web. Exa Agent runs off semantic index — independence of methodology matters for the low-confidence escalation set."
+
+  per_record_paradox:
+    description: "Per-row resolution of cross-field paradox flags (W6)."
+    primary: parallel_task_core
+    secondary: exa_agent_beta
+    cost_cap_usd: 15.0
+    max_records: 50
+    require_citations: true
+
+  contact_linkedin_validation:
+    description: "Sample-based LinkedIn-URL validity check at W5b."
+    primary: linkedin_validator_skill
+    underneath: rapidapi_linkedin
+    sample_size: 100
+
+  email_verification_spot_check:
+    description: "W5b sample email verification."
+    primary: regex_plus_dns_mx
+    secondary: million_verifier
+    sample_size: 500
+
+  serp_tiebreaker:
+    description: "When first-pass providers disagree on a domain (W2b)."
+    primary: openwebninja
+    secondary: exa_search
+
+merge_rules:
+  verified: "≥2 providers agree on the company name → confidence: high"
+  mismatch: "Providers disagree → confidence: low; surface to user for review"
+  unverifiable: "All providers fail to answer → no claim made (don't fabricate)"
+
+providers:
+
+  blitz_domain_to_linkedin:
+    base_url: "https://api.blitz-api.ai"
+    endpoint: "/v2/enrichment/domain-to-linkedin"
+    auth: header
+    auth_header: x-api-key
+    env: BLITZ_API_KEY
+    rate_limit: "plan-dependent"
+    cost_per_call_usd: 0
+    docs: "blitz"
+
+  blitz_companies_search:
+    base_url: "https://api.blitz-api.ai"
+    endpoint: "/v2/enrichment/companies/search"
+    auth: header
+    auth_header: x-api-key
+    env: BLITZ_API_KEY
+    cost_per_call_usd: 0
+    docs: "blitz"
+
+  openwebninja_ai_mode:
+    base_url: "https://api.openwebninja.com"
+    endpoint: "/google-ai-mode"
+    auth: header
+    auth_header: x-api-key
+    env: OPENWEBNINJA_API_KEY
+    cost_per_call_usd: 0.01
+    docs: "openweb-ninja"
+
+  openwebninja_website_contacts:
+    base_url: "https://api.openwebninja.com"
+    endpoint: "/website-contacts-scraper/scrape-contacts"
+    auth: header
+    auth_header: x-api-key
+    env: OPENWEBNINJA_API_KEY
+    cost_per_call_usd: 0.002
+    docs: "openweb-ninja"
+
+  firecrawl_render:
+    base_url: "https://api.firecrawl.dev"
+    endpoint: "/v1/scrape"
+    auth: bearer
+    env: FIRECRAWL_API_KEY
+    cost_per_page_usd: 0.001
+    docs: "firecrawl"
+
+  openwebninja:
+    base_url: "https://api.openwebninja.com"
+    endpoint: "/realtime-web-search/search-light"
+    auth: header
+    auth_header: x-api-key
+    env: OPENWEBNINJA_API_KEY
+    cost_per_call_usd: 0.005
+
+  exa_search:
+    base_url: "https://api.exa.ai"
+    endpoint_search: "/search"
+    endpoint_answer: "/answer"
+    auth: header
+    auth_header: x-api-key
+    env: EXA_API_KEY
+    cost_per_call_usd: 0.005
+
+  exa_agent_beta:
+    base_url: "https://api.exa.ai"
+    endpoint: "/agent"
+    auth: header
+    auth_header: x-api-key
+    env: EXA_API_KEY
+    beta_header_required: "Exa-Beta: agent-2026-05-07"
+    cost_model: "Agent Compute Units (~$0.0001/ACU) + $7/1K embedded searches; cost-capped via `effort` ($25-$2,000 per 1K runs)"
+    pin_warning: "MUST fail loudly if Exa rolls beta header forward; do NOT auto-upgrade."
+
+  parallel_task_group_base:
+    base_url: "https://api.parallel.ai/v1beta/task_groups"
+    auth: header
+    auth_header: x-api-key
+    env: PARALLEL_API_KEY
+    cost_per_row_usd_lite: 0.005
+    cost_per_row_usd_base: 0.010
+    cost_per_row_usd_core: 0.025
+    cost_per_row_usd_pro: 0.100
+    latency_per_row_s: [60, 300]
+    async: true
+    output_supports_basis_citations: true
+    notes: "Default tier: Core ($25/1K) for paid audits; Lite ($5/1K) for development."
+
+  parallel_task_core:
+    base_url: "https://api.parallel.ai/v1beta/tasks"
+    auth: header
+    auth_header: x-api-key
+    env: PARALLEL_API_KEY
+    cost_per_row_usd: 0.025
+    latency_per_row_s: 60
+    async: true
+
+  perplexity_sonar_pro:
+    base_url: "https://api.perplexity.ai/chat/completions"
+    model: "llama-3.1-sonar-large-128k-online"
+    auth: bearer
+    env: PERPLEXITY_API_KEY
+    cost_per_call_usd: 0.018
+
+  rapidapi_linkedin:
+    base_url: "https://linkedin-api-rapidapi-host.example"
+    auth: header
+    auth_header: X-RapidAPI-Key
+    env: RAPIDAPI_KEY
+    note: "Optional and not needed for the starter. Kept as a config example."
+
+  groq_llama_extract:
+    base_url: "https://api.groq.com/openai/v1/chat/completions"
+    model: "openai/gpt-oss-120b"
+    auth: bearer
+    env: GROQ_API_KEY
+    note: >
+      OpenAI-compatible. Cheapest + fastest structured extraction on Groq's LPU.
+      gpt-oss-120b ~$0.15/$0.60 per 1M tok; swap model to llama-3.1-8b-instant
+      ($0.05/$0.08) for the cheapest simple-field pulls or llama-4-scout for vision.
+    cost_per_call_usd: 0.00025
+
+
+  discolike_match:
+    base_url: "https://api.discolike.com/v1"
+    endpoint: "/match"
+    auth: header
+    auth_header: x-discolike-key
+    env: DISCOLIKE_API_KEY
+    cost_per_call_usd: 0.001
+    routing_role: last_resort
+
+  discolike_subsidiaries:
+    base_url: "https://api.discolike.com/v1"
+    endpoint: "/subsidiaries"
+    auth: header
+    auth_header: x-discolike-key
+    env: DISCOLIKE_API_KEY
+    cost_per_call_usd: 0.001
+    routing_role: last_resort
+
+  million_verifier:
+    base_url: "https://api.millionverifier.com/api/v3"
+    auth: query
+    env: MILLIONVERIFIER_API_KEY
+    cost_per_call_usd: 0.0009
+
+  dns_resolve:
+    description: "Free DNS lookup; built into scripts/domain_state_classify.py via dnspython"
+    cost_per_call_usd: 0
+
+  regex_plus_dns_mx:
+    description: "Free; built into scripts/contact_fill_audit.py"
+    cost_per_call_usd: 0
+
+graceful_degradation:
+  description: |
+    If a provider's env key is missing, fall through to the next-tier provider for that use case.
+    Hard-fail (with surfaced error) ONLY if BOTH primary and secondary are missing for a critical
+    use case (currently: domain_canonicalization_per_record requires Blitz OR OpenWebNinja;
+    icp_cohort_sample_200 requires Parallel OR Exa).
+  critical_use_cases: [domain_canonicalization_per_record, icp_cohort_sample_200, per_record_paradox]

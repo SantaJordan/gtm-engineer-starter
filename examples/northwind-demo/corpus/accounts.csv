@@ -1,0 +1,9 @@
+account_id,account_name,website,locations_at_signup,locations_now,segment,stage,first_won_date,churn_date,csm,plan
+001XX0000000101AAA,Rivermark Dental Group,rivermarkdental.example,4,48,General dentistry group,Customer,2024-03-12,,Alex Kim,Group
+001XX0000000102AAA,Birchwood Family Dentistry,birchwooddental.example,2,3,General dentistry group,Customer,2024-06-03,,Alex Kim,Group
+001XX0000000103AAA,Lakeside Smiles,lakesidesmiles.example,3,3,General dentistry group,Customer,2024-09-18,,Morgan Diaz,Group
+001XX0000000104AAA,Summit Orthodontics,summitortho.example,1,1,Orthodontics,Churned,2024-05-20,2024-11-30,Morgan Diaz,Solo
+001XX0000000105AAA,Harbor Pediatric Dental,harborpeds.example,2,2,Pediatric dentistry,Customer,2025-01-14,,Alex Kim,Group
+001XX0000000106AAA,Copperline Dental Partners,copperlinedental.example,6,70,General dentistry group,Customer,2024-02-01,,Morgan Diaz,Enterprise
+001XX0000000107AAA,Quarry Hill Dental,quarryhilldental.example,1,1,General dentistry solo,Churned,2024-10-07,2025-03-15,Alex Kim,Solo
+001XX0000000108AAA,Elmstead Oral Surgery,elmsteadoralsurgery.example,1,1,Oral surgery,Closed Lost,,,,

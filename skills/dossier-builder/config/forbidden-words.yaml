@@ -1,0 +1,47 @@
+# Forbidden words for pass-1 dossier output.
+# Enforced at render time by scripts/validate_schema.py and scripts/render_html.py.
+# Hits OUTSIDE notes_from_revops[] block fail the render.
+#
+# Why these words: each frames an event as a prediction, recommendation, or score.
+# Pass-1 describes verbatim. Pass-2 (a separate downstream skill) reasons.
+# Mixing the two destabilizes dossiers across reasoning-prompt iterations.
+
+words:
+  - predict
+  - suggest
+  - recommend
+  - score
+  - potential
+  - fit
+  - likely
+  - indicate
+
+# Phrases that imply prediction/recommendation
+phrases:
+  - "will probably"
+  - "is likely to"
+  - "should consider"
+  - "may want to"
+  - "we recommend"
+  - "the best next step"
+  - "at risk of"
+  - "expected to churn"
+  - "high-fit prospect"
+  - "good candidate for"
+
+# Explicit allowances — these tokens are field-name references, not verbs
+# Render check uses regex that excludes these contexts
+allowances:
+  - context: "ICP fit|borderline|not_fit|unknown"  # the icp_fit field
+    note: "Allowed in headline/structured_signals as a literal field reference, not a verb"
+  - context: "icp_fit"
+    note: "JSON field name, allowed everywhere"
+  - context: "lead_source_trust"
+    note: "Field name"
+  - context: "linking_trust"
+    note: "Field name"
+
+# Where these are allowed
+allowed_in:
+  - notes_from_revops  # human comments verbatim
+  - tiebreakers        # human decisions

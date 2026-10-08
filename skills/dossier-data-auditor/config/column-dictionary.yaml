@@ -1,0 +1,132 @@
+version: 1
+
+# Column classifier. scan.py applies the matchers in order; first match wins.
+# Falls through to `unknown` if nothing matches — these get surfaced for human
+# triage at W1.
+
+classes:
+
+  domain_like:
+    description: "Company website / domain (any URL-bearing column)"
+    matcher_headers: ['(?i)(domain|website|homepage|company_?url|web_?site|web_?address|company_?domain|primary_?domain|canonical_?domain|additional_?domains)']
+    matcher_values:
+      regex: '^(?:https?://)?(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+(?:/.*)?$'
+      min_match_rate: 0.50
+    sub_classes:
+      primary_website: { matcher_headers: ['(?i)^(website|company_website|homepage|home_?page)'] }
+      domain_only: { matcher_headers: ['(?i)^(domain|company_domain|email_domain)$'], matcher_values: { regex: '^[a-z0-9-]+(?:\.[a-z0-9-]+)+$' } }
+      enrichment_domain: { matcher_headers: ['(?i)(clearbit_|zoominfo_|apollo_|builtwith_|cognism_)(domain|website)'] }
+      secondary_domain: { matcher_headers: ['(?i)(additional_domains|secondary_domains|subsidiaries|dba_domains)'] }
+      platform_subdomain: { matcher_values: { regex: '\.(salesforce|hubspot|myshopify|zendesk|atlassian)\.com$' } }
+      address_url: { matcher_headers: ['(?i)(billing|shipping)_?address.*url'] }
+
+  linkedin_like:
+    description: "LinkedIn company URL"
+    matcher_headers: ['(?i)(linkedin|li_url|li_company|linkedin_?url|company_?linkedin)']
+    matcher_values:
+      regex: 'linkedin\.com/(company|in|school)/'
+      min_match_rate: 0.30
+
+  email_like:
+    description: "Email address"
+    matcher_headers: ['(?i)(email|e_?mail|primary_?email|business_?email|work_?email|contact_?email)']
+    matcher_values:
+      regex: '^[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}$'
+      min_match_rate: 0.60
+    sub_classes:
+      email_inferred_domain: { description: "Derived from email column via split('@'); populated by scan.py post-pass" }
+
+  date_like:
+    description: "Date / timestamp — checked early so date-shaped values don't get captured by id_like."
+    matcher_headers: ['(?i)(date|time|created|modified|updated|signed|closed|started|ended|launched|last_?activity)_?(at|on)?']
+    matcher_values:
+      regex: '^\d{4}[-/]\d{1,2}[-/]\d{1,2}(T?\d|$)|\d{1,2}/\d{1,2}/\d{2,4}'
+      min_match_rate: 0.50
+
+  industry_like:
+    description: "Industry / vertical / segment / NAICS / SIC. Header match required."
+    matcher_headers: ['(?i)(industry|vertical|segment|sector|naics|sic|category|sub_?vertical|broad_?vertical)']
+    matcher_values: { min_match_rate: 0.99 }
+
+  id_like:
+    description: "Canonical record ID — varies by source system. Checked before generic value classes."
+    matcher_headers:
+      - '(?i)^(id|cid)$'
+      - '(?i)(account|customer|contact|opp|case|tenant|org|external|sfdc|hubspot|pro)_?id$'
+      - '(?i)^(npi|dot|duns|ein)$'
+      - '(?i)(_id|Id)$'
+    matcher_values:
+      regex: '^[a-zA-Z0-9_-]{6,32}$'
+      min_match_rate: 0.85
+    sub_classes:
+      id_salesforce_15char: { matcher_values: { regex: '^[a-zA-Z0-9]{15}$' } }
+      id_salesforce_18char: { matcher_values: { regex: '^[a-zA-Z0-9]{18}$' } }
+      id_stripe_customer: { matcher_values: { regex: '^cus_[a-zA-Z0-9]+$' } }
+      id_hubspot_integer: { matcher_values: { regex: '^\d{4,12}$' } }
+      id_npi: { matcher_values: { regex: '^\d{10}$' } }
+      id_dot_number: { matcher_values: { regex: '^\d{6,7}$' } }
+      id_duns: { matcher_values: { regex: '^\d{9}$' } }
+      id_ein: { matcher_values: { regex: '^\d{2}-\d{7}$' } }
+
+  company_name_like:
+    description: "Company / account / organization name"
+    matcher_headers:
+      - '(?i)(company|account|organization|legal|dba|business)_?name'
+      - '(?i)^(name|company|account|organization)$'
+    matcher_values:
+      negative_regex: '^(https?://|.+@.+|\d+)$'
+      min_match_rate: 0.50
+    sub_classes:
+      legal_entity_name: { matcher_headers: ['(?i)(legal_?entity|legal_?name|registered_?name)'] }
+      dba: { matcher_headers: ['(?i)(dba|doing_?business_?as|trade_?name)'] }
+      brand_or_display: { matcher_headers: ['(?i)^(account.?name|company.?name|name)$'] }
+
+  revenue_like:
+    description: "Revenue / ARR / MRR / deal-amount / payment-volume"
+    matcher_headers: ['(?i)(revenue|arr|mrr|amount|sales|gmv|gross|annual_revenue|monthly_revenue|payments?|spend|earnings|tcv|acv|ltv)']
+    matcher_values:
+      regex: '^-?\$[\d,]+(\.\d+)?\s*([KMB])?$|^[\d,]+(\.\d+)?\s*[KMB]$'
+      min_match_rate: 0.40
+
+  employee_like:
+    description: "Employee count / company size / FTE / physical-asset proxy. Header match REQUIRED — value pattern too generic to use alone."
+    matcher_headers: ['(?i)(employee|headcount|^size$|fte|staff|workforce|drivers|^trucks$|seats|company_size)_?(count|range|total)?']
+    matcher_values:
+      regex: '^(\d+\s*[-–]\s*\d+|\d+\+?)$'
+      min_match_rate: 0.99  # essentially require header
+
+  phone_like:
+    description: "Phone number"
+    matcher_headers: ['(?i)(phone|telephone|mobile|fax|^tel$)']
+    matcher_values:
+      regex: '^[\+\(]?\d[\d\s\-\(\)\.]{6,}\d$'
+      min_match_rate: 0.50
+
+  geo_like:
+    description: "State / city / region / country / zip / address"
+    matcher_headers: ['(?i)(state|city|country|zip|postal|region|province|street|address|locality|county)']
+    matcher_values: { min_match_rate: 0.50 }
+
+  free_text:
+    description: "Unstructured notes / description (catch-all for long text)"
+    matcher_headers: ['(?i)(notes|description|comment|summary|body|memo|details|background)']
+    matcher_values:
+      min_avg_length: 50
+      min_match_rate: 0.30
+    sub_classes:
+      free_text_url: { description: "Populated when URL regex extraction surfaces ≥1 URL per row on average" }
+
+  numeric:
+    description: "Numeric (catch-all for ints/floats that aren't revenue/employees/IDs)"
+    matcher_values:
+      regex: '^-?\d+(\.\d+)?$'
+      min_match_rate: 0.80
+
+  boolean_like:
+    description: "Boolean / flag"
+    matcher_values:
+      values_in: ['true', 'false', 'TRUE', 'FALSE', '1', '0', 'yes', 'no', 'Y', 'N', 't', 'f']
+      min_match_rate: 0.95
+
+  unknown:
+    description: "Column did not match any class — surface to user at W1 for triage"

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gtm-engineer-starter.example/schemas/dossier-builder/dq_finding.schema.json",
+  "title": "DQ Finding",
+  "description": "One finding from the data-quality triage agent. Statistician + RevOps voice. Must include verbatim record example so the human can verify.",
+  "type": "object",
+  "required": ["check_id", "family", "severity", "headline", "evidence", "suggested_action", "stage"],
+  "additionalProperties": false,
+  "properties": {
+    "check_id": {"type": "string", "description": "ID from config/dq-checks.yaml"},
+    "family": {
+      "type": "string",
+      "enum": ["distributional", "fill_rate", "identity", "cross_system_join", "self_domain_trap", "cohort_sanity", "temporal", "paradox"]
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["block", "warn", "note"],
+      "description": "block = halts wave, warn = surface in panel, note = log only"
+    },
+    "stage": {"type": "string", "enum": ["raw", "linked"]},
+    "headline": {"type": "string", "description": "One business-readable sentence. Statistician + RevOps voice."},
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["record_id", "field", "value"],
+        "additionalProperties": true,
+        "properties": {
+          "record_id": {"type": "string"},
+          "field": {"type": "string"},
+          "value": {"description": "Verbatim value from source"},
+          "raw_ref": {"type": "object"}
+        }
+      }
+    },
+    "suggested_action": {"type": "string"},
+    "metric": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Numeric context — e.g., {p99: 8.4M, median: 1.2K, ratio: 7000}"
+    }
+  }
+}

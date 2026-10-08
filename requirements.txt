@@ -1,0 +1,21 @@
+# Core: enough for `make check` (the offline demo) and every test suite.
+pyyaml>=6.0
+jsonschema>=4.18        # includes the `referencing` package the dossier validator uses
+pandas>=2.0
+numpy>=1.24
+pytest>=7.0
+
+# Data auditor (domain checks, fuzzy matching, HTTP)
+requests>=2.31
+rapidfuzz>=3.0
+dnspython>=2.4
+
+# Won/Lost/10X (win-loss-rewind): model calls and statistics
+anthropic>=0.40
+python-dotenv>=1.0
+scikit-learn>=1.3
+scipy>=1.11
+
+# Optional
+# simple-salesforce>=1.12   # only for win-loss-rewind's Salesforce adapter
+# idna>=3.6                 # better handling of non-ASCII domains in the packet builder

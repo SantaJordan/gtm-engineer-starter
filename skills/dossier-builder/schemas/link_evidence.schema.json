@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gtm-engineer-starter.example/schemas/dossier-builder/link_evidence.schema.json",
+  "title": "Link Evidence",
+  "description": "Per-record verdict + aggregate linking_trust. Six verdicts are mutually exclusive. Aggregate trust is computed deterministically from the verdict distribution.",
+  "type": "object",
+  "required": ["per_record", "aggregate", "tenant_domain_strip"],
+  "additionalProperties": false,
+  "properties": {
+    "per_record": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["raw_ref", "candidate_account_id", "verdict", "evidence"],
+        "additionalProperties": false,
+        "properties": {
+          "raw_ref": {"type": "object"},
+          "candidate_account_id": {"type": "string", "description": "Canonical account in primary-id-system that this record proposes to link to. Null if no candidate."},
+          "verdict": {
+            "type": "string",
+            "enum": ["AUTH_KEEP", "AUTH_REJECT", "AUTH_EMAIL_CONFLICT", "EMAIL_KEEP", "EMAIL_REJECT", "INDETERMINATE", "NOT_IN_SOURCE"]
+          },
+          "evidence": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id_match": {"type": "boolean"},
+              "domain_match": {"type": "boolean"},
+              "name_fuzzy": {"type": "number", "minimum": 0, "maximum": 1, "description": "Jaccard or similar 0..1"},
+              "phone_match": {"type": "boolean"},
+              "matching_domains": {"type": "array", "items": {"type": "string"}},
+              "rejected_reason": {"type": "string"}
+            }
+          },
+          "ambiguous": {"type": "boolean", "default": false},
+          "candidate_count": {"type": "integer", "minimum": 0},
+          "verified_by": {"type": "string", "description": "Set when human resolved a tiebreaker"},
+          "verified_at": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "aggregate": {
+      "type": "object",
+      "required": ["linking_trust", "verdict_counts"],
+      "additionalProperties": false,
+      "properties": {
+        "linking_trust": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "none", "indeterminate"]
+        },
+        "verdict_counts": {
+          "type": "object",
+          "patternProperties": {"^[A-Z_]+$": {"type": "integer", "minimum": 0}}
+        },
+        "fuzzy_join_fraction": {"type": "number", "minimum": 0, "maximum": 1, "description": "Target ≤0.20 (≥80% ID-based)"}
+      }
+    },
+    "tenant_domain_strip": {
+      "type": "object",
+      "required": ["tenant_domain", "false_matches_avoided"],
+      "additionalProperties": false,
+      "properties": {
+        "tenant_domain": {"type": "string"},
+        "false_matches_avoided": {"type": "integer", "minimum": 0, "description": "Records that would have falsely matched if not stripped"}
+      }
+    }
+  }
+}

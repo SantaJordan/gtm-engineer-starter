@@ -1,0 +1,54 @@
+{
+  "_why": "Derived by examples/northwind-demo/replay.py. Each rule's evidence is in _provenance.",
+  "inclusions": [
+    "general or family dentistry practice with two or more offices",
+    "pediatric dentistry practice"
+  ],
+  "exclusions": [
+    "orthodontics-only practice",
+    "single-office solo practice",
+    "oral surgery-only practice",
+    "veterinary clinic or any non-dental business"
+  ],
+  "territories": [
+    "United States"
+  ],
+  "_provenance": {
+    "general or family dentistry practice with two or more offices": {
+      "source": "customers.csv won/10X accounts",
+      "accounts": [
+        "001XX0000000101AAA",
+        "001XX0000000102AAA",
+        "001XX0000000103AAA",
+        "001XX0000000106AAA"
+      ]
+    },
+    "pediatric dentistry practice": {
+      "source": "customers.csv won/10X accounts",
+      "accounts": [
+        "001XX0000000105AAA"
+      ]
+    },
+    "orthodontics-only practice": {
+      "source": "customers.csv lost accounts",
+      "accounts": [
+        "001XX0000000104AAA"
+      ]
+    },
+    "single-office solo practice": {
+      "source": "customers.csv lost accounts",
+      "accounts": [
+        "001XX0000000107AAA"
+      ]
+    },
+    "oral surgery-only practice": {
+      "source": "customers.csv lost accounts",
+      "accounts": [
+        "001XX0000000108AAA"
+      ]
+    },
+    "veterinary clinic or any non-dental business": {
+      "source": "product scope: Northwind sells dental scheduling (not learned from a loss)"
+    }
+  }
+}

@@ -1,0 +1,131 @@
+# Tool-equipping matrix for dossier-data-auditor sub-agents.
+# Each sub-agent gets exactly the env vars, CLIs, and Python packages it needs —
+# no more, no less. The skill's runtime checks this file at spawn time and
+# refuses to start an agent that's missing a required env var.
+#
+# Per global CLAUDE.md: for any operation touching >50 rows, sub-agents call APIs
+# directly via Python `requests` — never the MCP wrappers. Codified here as
+# `mcp_allowed: false` on every agent.
+
+version: 1
+
+global:
+  reasoning_model: claude-opus-5-5        # accuracy over cost
+  extraction_model: groq_llama_8b         # cheap structured extraction only
+  cost_guard: "estimate first; above $100 stop and ask (no script shipped)"
+  mcp_allowed: false                      # always use direct API calls
+
+agents:
+
+  scan-agent:
+    wave: W1
+    env:
+      - GROQ_API_KEY                      # column-content classification when headers are ambiguous
+    local_clis: []
+    python_packages: [pandas, openpyxl, pyarrow, polars, openai]
+    spot_check_budget_usd: 0              # no web calls at this stage
+
+  domain-audit-agent:
+    wave: W2
+    env:
+      - SERPER_API_KEY
+      - EXA_API_KEY
+      - LINKUP_API_KEY
+      - FIRECRAWL_API_KEY
+      - OPENWEBNINJA_API_KEY
+      - ZENROWS_API_KEY
+      - BLITZ_API_KEY
+      - DISCOLIKE_API_KEY
+      - PARALLEL_API_KEY                  # 4th-opinion tiebreaker
+      - GROQ_API_KEY                      # extract structure from scraped HTML
+    local_clis:
+      - agent-browser                     # default JS-page fallback when Firecrawl misses (token-efficient Playwright wrapper)
+      - browser-use                       # fuzzy-natural-language task fallback (Python LLM agent loop)
+      - browser-harness                   # attach to authenticated Chrome (port 9222) for gated content
+    python_packages: [requests, dnspython, openai]
+    spot_check_budget_usd: 5.0
+    multi_provider_fan_out: true
+
+  join-inference-agent:
+    wave: W3
+    env: []                               # local reasoning only, no web calls
+    local_clis: []
+    python_packages: [pandas, rapidfuzz]
+    cost_guard_trip_at_usd: 100.0
+
+  revenue-agent:
+    wave: W4
+    env:
+      - GROQ_API_KEY                      # optional — extract revenue from free-text columns
+    local_clis: []
+    python_packages: [pandas, numpy, scipy, openai]
+    spot_check_budget_usd: 0
+
+  fill-rate-agent:
+    wave: W5
+    env: []
+    local_clis: []
+    python_packages: [pandas]
+    spot_check_budget_usd: 0
+
+  sanity-agent:
+    wave: W6
+    env:
+      - PARALLEL_API_KEY                  # primary — Task Groups for cohort sanity + paradox resolution
+      - PERPLEXITY_API_KEY                # second-opinion (Sonar / Sonar Pro)
+      - SERPER_API_KEY
+      - EXA_API_KEY
+      - OPENWEBNINJA_API_KEY
+      - FIRECRAWL_API_KEY
+      - GROQ_API_KEY
+    local_clis:
+      - agent-browser                     # JS-page fallback (default)
+      - browser-use                       # fuzzy natural-language verification ("find the latest 10-K, extract gross margin")
+      - browser-harness                   # attach to authenticated Chrome session for gated-content verification
+    python_packages: [pandas, requests, openai]
+    parallel_task_group_cost_usd: 8.0     # typical for 200-row Base tier
+    paradox_resolution_cost_cap_usd: 15.0
+    max_paradoxes: 50
+
+  scorecard-agent:
+    wave: W7
+    env: []                               # assembly only
+    local_clis: []
+    python_packages: [jinja2]
+    spot_check_budget_usd: 0
+
+# Per-CLI install notes (installer.sh auto-installs the OSS ones on annual subscribers' machines):
+clis:
+
+  agent-browser:
+    install: "npm install -g @vercel-labs/agent-browser"
+    verify: "agent-browser --version"
+    license: Apache-2.0
+    cost: "local CPU + caller's LLM tokens"
+    fallback_if_missing: "Use browser-use or ZenRows instead. Auditor degrades; doesn't block."
+    use_when: "JS page needs deterministic Playwright-style script with low token overhead (1,400 vs Playwright-MCP's 7,800 per 6-step)."
+
+  browser-use:
+    install: "pipx install browser-use && python3 -m playwright install chromium"
+    verify: "browser-use --version"
+    license: MIT
+    cost: "free OSS library; LLM tokens consumed by the agent loop"
+    fallback_if_missing: "Use agent-browser for deterministic scripts; use ZenRows if anti-bot."
+    use_when: "Task is naturally English ('find the latest 10-K filing and extract gross margin'), the site changes layout often, and writing a selector script would cost more than the LLM loop. PyPI v0.12.8+."
+
+  browser-harness:
+    install: "command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh; git clone https://github.com/browser-use/browser-harness ~/.local/share/browser-harness; uv tool install -e ~/.local/share/browser-harness"
+    verify: "browser-harness --doctor"
+    license: MIT
+    cost: "free OSS; no cloud component"
+    fallback_if_missing: "Use agent-browser headless. Loses the attach-to-existing-Chrome-session capability."
+    use_when: "Audit needs to ride an authenticated Chrome session you already have open (e.g., gated B2B databases like Crunchbase Pro, ZoomInfo, or a customer's internal portal). Attaches to Chrome via CDP at port 9222; stays one process with the orchestrating Claude."
+
+# Env-var presence is checked at agent spawn. Missing keys → warn + degrade gracefully:
+#  - Missing GROQ_API_KEY → fall back to Opus for structured extraction (5× cost)
+#  - Missing PARALLEL_API_KEY → fall back to web_sanity_sample.py (Serper+Exa+Opus-judge)
+#  - Missing PERPLEXITY_API_KEY → skip second-opinion step on low-confidence rows
+#  - Missing LINKUP_API_KEY → use only Serper+Exa+Firecrawl for multi-provider fan-out (3 not 4)
+#  - Missing agent-browser → ZenRows-only for JS-page fallback (10× cost vs agent-browser)
+#  - Missing browser-use → can't run fuzzy natural-language audit tasks; agent-browser handles deterministic cases
+#  - Missing browser-harness → can't attach to authenticated Chrome; falls back to headless via agent-browser

@@ -1,0 +1,301 @@
+customer_id,company_name,domain,outcome,health,label,close_date,first_call_date,churn_date,lifetime_revenue,label_evidence
+001XX0000000101AAA,Rivermark Dental Group,rivermarkdental.example,won,healthy,10X,2024-03-01,,,84240,"lifetime $84,240 vs median $5,131"
+001XX0000000106AAA,Copperline Dental Partners,copperlinedental.example,won,healthy,10X,2024-02-01,,,118920,"lifetime $118,920 vs median $5,131"
+001XX0000000102AAA,Birchwood Family Dentistry,birchwooddental.example,won,healthy,won,2024-06-01,,,6840,"lifetime $6,840 vs median $5,131"
+001XX0000000103AAA,Lakeside Smiles,lakesidesmiles.example,won,healthy,won,2024-09-01,,,7020,"lifetime $7,020 vs median $5,131"
+001XX0000000105AAA,Harbor Pediatric Dental,harborpeds.example,won,healthy,won,2025-01-01,,,3240,"lifetime $3,240 vs median $5,131"
+001XX0000000104AAA,Summit Orthodontics,summitortho.example,won,churned,lost,2024-05-01,,,1320,churned
+001XX0000000107AAA,Quarry Hill Dental,quarryhilldental.example,won,churned,lost,2024-10-01,,,1100,churned
+001XX0000000108AAA,Elmstead Oral Surgery,elmsteadoralsurgery.example,lost,,lost,2024-08-14,,,0,never closed
+NW-001,Alder Creek Dental Care,aldercreekdentalcare.example,won,churned,lost,2023-05-26,,,2042,churned
+NW-002,Bluff Creek Family Dental,bluffcreekfamilydental.example,won,churned,lost,2024-04-08,,,2422,churned
+NW-003,Cedar Creek Smiles,cedarcreeksmiles.example,won,healthy,won,2024-06-25,,,3122,"lifetime $3,122 vs median $5,131"
+NW-004,Dover Creek Dental Group,dovercreekdentalgroup.example,won,healthy,won,2024-04-20,,,7912,"lifetime $7,912 vs median $5,131"
+NW-005,Elm Creek Dentistry,elmcreekdentistry.example,won,healthy,won,2024-10-17,,,4914,"lifetime $4,914 vs median $5,131"
+NW-006,Fern Creek Dental Care,ferncreekdentalcare.example,won,healthy,won,2024-02-21,,,8364,"lifetime $8,364 vs median $5,131"
+NW-007,Glen Creek Family Dental,glencreekfamilydental.example,lost,,lost,2023-11-19,,,0,never closed
+NW-008,Hawk Creek Smiles,hawkcreeksmiles.example,won,healthy,won,2023-04-21,,,7613,"lifetime $7,613 vs median $5,131"
+NW-009,Iris Creek Dental Group,iriscreekdentalgroup.example,lost,,lost,2023-01-01,,,0,never closed
+NW-010,Juniper Creek Dentistry,junipercreekdentistry.example,won,healthy,won,2024-02-11,,,6075,"lifetime $6,075 vs median $5,131"
+NW-011,Kestrel Creek Dental Care,kestrelcreekdentalcare.example,won,healthy,won,2023-10-04,,,8528,"lifetime $8,528 vs median $5,131"
+NW-012,Linden Creek Family Dental,lindencreekfamilydental.example,won,healthy,won,2023-05-18,,,6359,"lifetime $6,359 vs median $5,131"
+NW-013,Maple Creek Smiles,maplecreeksmiles.example,won,healthy,won,2024-11-29,,,6988,"lifetime $6,988 vs median $5,131"
+NW-014,North Creek Dental Group,northcreekdentalgroup.example,won,healthy,won,2024-03-05,,,8995,"lifetime $8,995 vs median $5,131"
+NW-015,Oak Creek Dentistry,oakcreekdentistry.example,won,healthy,10X,2023-10-04,,,82778,"lifetime $82,778 vs median $5,131"
+NW-016,Pine Creek Dental Care,pinecreekdentalcare.example,lost,,lost,2023-01-21,,,0,never closed
+NW-017,Quail Creek Family Dental,quailcreekfamilydental.example,won,healthy,10X,2023-04-13,,,103361,"lifetime $103,361 vs median $5,131"
+NW-018,Ridge Creek Smiles,ridgecreeksmiles.example,won,healthy,won,2023-12-03,,,3078,"lifetime $3,078 vs median $5,131"
+NW-019,Sage Creek Dental Group,sagecreekdentalgroup.example,won,healthy,won,2024-10-13,,,4709,"lifetime $4,709 vs median $5,131"
+NW-020,Tamarack Creek Dentistry,tamarackcreekdentistry.example,won,churned,lost,2024-08-11,,,2781,churned
+NW-021,Alder Hill Dental Care,alderhilldentalcare.example,won,healthy,won,2024-09-17,,,5546,"lifetime $5,546 vs median $5,131"
+NW-022,Bluff Hill Family Dental,bluffhillfamilydental.example,won,healthy,won,2024-02-02,,,7537,"lifetime $7,537 vs median $5,131"
+NW-023,Cedar Hill Smiles,cedarhillsmiles.example,won,churned,lost,2024-06-08,,,958,churned
+NW-024,Dover Hill Dental Group,doverhilldentalgroup.example,won,healthy,won,2024-09-02,,,5105,"lifetime $5,105 vs median $5,131"
+NW-025,Elm Hill Dentistry,elmhilldentistry.example,lost,,lost,2023-05-10,,,0,never closed
+NW-026,Fern Hill Dental Care,fernhilldentalcare.example,lost,,lost,2023-10-14,,,0,never closed
+NW-027,Glen Hill Family Dental,glenhillfamilydental.example,won,churned,lost,2024-04-01,,,2485,churned
+NW-028,Hawk Hill Smiles,hawkhillsmiles.example,won,healthy,won,2023-05-15,,,7349,"lifetime $7,349 vs median $5,131"
+NW-029,Iris Hill Dental Group,irishilldentalgroup.example,won,healthy,10X,2024-06-18,,,101630,"lifetime $101,630 vs median $5,131"
+NW-030,Juniper Hill Dentistry,juniperhilldentistry.example,won,healthy,won,2024-01-02,,,3146,"lifetime $3,146 vs median $5,131"
+NW-031,Kestrel Hill Dental Care,kestrelhilldentalcare.example,won,healthy,won,2023-03-18,,,8211,"lifetime $8,211 vs median $5,131"
+NW-032,Linden Hill Family Dental,lindenhillfamilydental.example,lost,,lost,2023-03-19,,,0,never closed
+NW-033,Maple Hill Smiles,maplehillsmiles.example,won,healthy,won,2023-12-16,,,8764,"lifetime $8,764 vs median $5,131"
+NW-034,North Hill Dental Group,northhilldentalgroup.example,lost,,lost,2024-03-03,,,0,never closed
+NW-035,Oak Hill Dentistry,oakhilldentistry.example,won,healthy,won,2024-11-09,,,3119,"lifetime $3,119 vs median $5,131"
+NW-036,Pine Hill Dental Care,pinehilldentalcare.example,won,churned,lost,2023-09-21,,,1273,churned
+NW-037,Quail Hill Family Dental,quailhillfamilydental.example,lost,,lost,2024-08-17,,,0,never closed
+NW-038,Ridge Hill Smiles,ridgehillsmiles.example,won,healthy,won,2023-01-31,,,7249,"lifetime $7,249 vs median $5,131"
+NW-039,Sage Hill Dental Group,sagehilldentalgroup.example,won,healthy,won,2024-05-24,,,8720,"lifetime $8,720 vs median $5,131"
+NW-040,Tamarack Hill Dentistry,tamarackhilldentistry.example,lost,,lost,2024-01-12,,,0,never closed
+NW-041,Alder Park Dental Care,alderparkdentalcare.example,won,churned,lost,2024-11-06,,,2202,churned
+NW-042,Bluff Park Family Dental,bluffparkfamilydental.example,won,healthy,won,2023-09-14,,,6315,"lifetime $6,315 vs median $5,131"
+NW-043,Cedar Park Smiles,cedarparksmiles.example,won,healthy,10X,2024-01-29,,,84415,"lifetime $84,415 vs median $5,131"
+NW-044,Dover Park Dental Group,doverparkdentalgroup.example,won,churned,lost,2023-02-11,,,2236,churned
+NW-045,Elm Park Dentistry,elmparkdentistry.example,won,churned,lost,2024-04-27,,,2645,churned
+NW-046,Fern Park Dental Care,fernparkdentalcare.example,won,healthy,won,2024-05-20,,,8126,"lifetime $8,126 vs median $5,131"
+NW-047,Glen Park Family Dental,glenparkfamilydental.example,lost,,lost,2023-11-25,,,0,never closed
+NW-048,Hawk Park Smiles,hawkparksmiles.example,won,healthy,won,2023-10-15,,,3339,"lifetime $3,339 vs median $5,131"
+NW-049,Iris Park Dental Group,irisparkdentalgroup.example,won,healthy,won,2023-05-20,,,3156,"lifetime $3,156 vs median $5,131"
+NW-050,Juniper Park Dentistry,juniperparkdentistry.example,won,healthy,won,2023-05-25,,,5182,"lifetime $5,182 vs median $5,131"
+NW-051,Kestrel Park Dental Care,kestrelparkdentalcare.example,won,healthy,won,2024-10-07,,,3893,"lifetime $3,893 vs median $5,131"
+NW-052,Linden Park Family Dental,lindenparkfamilydental.example,won,churned,lost,2023-07-24,,,1611,churned
+NW-053,Maple Park Smiles,mapleparksmiles.example,won,healthy,won,2023-02-07,,,6868,"lifetime $6,868 vs median $5,131"
+NW-054,North Park Dental Group,northparkdentalgroup.example,won,healthy,won,2024-05-27,,,8712,"lifetime $8,712 vs median $5,131"
+NW-055,Oak Park Dentistry,oakparkdentistry.example,lost,,lost,2023-08-18,,,0,never closed
+NW-056,Pine Park Dental Care,pineparkdentalcare.example,won,churned,lost,2023-07-21,,,2657,churned
+NW-057,Quail Park Family Dental,quailparkfamilydental.example,lost,,lost,2024-05-29,,,0,never closed
+NW-058,Ridge Park Smiles,ridgeparksmiles.example,lost,,lost,2023-07-29,,,0,never closed
+NW-059,Sage Park Dental Group,sageparkdentalgroup.example,lost,,lost,2023-05-07,,,0,never closed
+NW-060,Tamarack Park Dentistry,tamarackparkdentistry.example,lost,,lost,2024-07-03,,,0,never closed
+NW-061,Alder Valley Dental Care,aldervalleydentalcare.example,lost,,lost,2023-01-17,,,0,never closed
+NW-062,Bluff Valley Family Dental,bluffvalleyfamilydental.example,won,healthy,won,2023-10-09,,,7508,"lifetime $7,508 vs median $5,131"
+NW-063,Cedar Valley Smiles,cedarvalleysmiles.example,won,healthy,won,2023-02-05,,,3524,"lifetime $3,524 vs median $5,131"
+NW-064,Dover Valley Dental Group,dovervalleydentalgroup.example,won,healthy,won,2023-06-02,,,4150,"lifetime $4,150 vs median $5,131"
+NW-065,Elm Valley Dentistry,elmvalleydentistry.example,lost,,lost,2024-03-26,,,0,never closed
+NW-066,Fern Valley Dental Care,fernvalleydentalcare.example,won,churned,lost,2024-06-23,,,1706,churned
+NW-067,Glen Valley Family Dental,glenvalleyfamilydental.example,won,churned,lost,2024-07-27,,,2906,churned
+NW-068,Hawk Valley Smiles,hawkvalleysmiles.example,lost,,lost,2024-09-16,,,0,never closed
+NW-069,Iris Valley Dental Group,irisvalleydentalgroup.example,lost,,lost,2024-08-09,,,0,never closed
+NW-070,Juniper Valley Dentistry,junipervalleydentistry.example,won,healthy,won,2024-01-22,,,3040,"lifetime $3,040 vs median $5,131"
+NW-071,Kestrel Valley Dental Care,kestrelvalleydentalcare.example,won,churned,lost,2024-05-17,,,1299,churned
+NW-072,Linden Valley Family Dental,lindenvalleyfamilydental.example,won,churned,lost,2023-09-10,,,2455,churned
+NW-073,Maple Valley Smiles,maplevalleysmiles.example,won,healthy,won,2023-11-21,,,6903,"lifetime $6,903 vs median $5,131"
+NW-074,North Valley Dental Group,northvalleydentalgroup.example,won,healthy,won,2023-01-24,,,5131,"lifetime $5,131 vs median $5,131"
+NW-075,Oak Valley Dentistry,oakvalleydentistry.example,won,healthy,won,2023-12-30,,,5327,"lifetime $5,327 vs median $5,131"
+NW-076,Pine Valley Dental Care,pinevalleydentalcare.example,won,healthy,won,2024-06-06,,,7769,"lifetime $7,769 vs median $5,131"
+NW-077,Quail Valley Family Dental,quailvalleyfamilydental.example,lost,,lost,2023-01-24,,,0,never closed
+NW-078,Ridge Valley Smiles,ridgevalleysmiles.example,won,healthy,won,2023-07-29,,,4308,"lifetime $4,308 vs median $5,131"
+NW-079,Sage Valley Dental Group,sagevalleydentalgroup.example,won,churned,lost,2023-08-27,,,1358,churned
+NW-080,Tamarack Valley Dentistry,tamarackvalleydentistry.example,won,churned,lost,2023-07-19,,,2090,churned
+NW-081,Alder Point Dental Care,alderpointdentalcare.example,won,churned,lost,2023-05-16,,,1780,churned
+NW-082,Bluff Point Family Dental,bluffpointfamilydental.example,won,healthy,won,2023-05-10,,,6453,"lifetime $6,453 vs median $5,131"
+NW-083,Cedar Point Smiles,cedarpointsmiles.example,won,churned,lost,2024-01-05,,,2264,churned
+NW-084,Dover Point Dental Group,doverpointdentalgroup.example,lost,,lost,2023-07-13,,,0,never closed
+NW-085,Elm Point Dentistry,elmpointdentistry.example,won,healthy,won,2024-06-11,,,7519,"lifetime $7,519 vs median $5,131"
+NW-086,Fern Point Dental Care,fernpointdentalcare.example,won,healthy,won,2023-06-26,,,3941,"lifetime $3,941 vs median $5,131"
+NW-087,Glen Point Family Dental,glenpointfamilydental.example,won,churned,lost,2023-05-18,,,1053,churned
+NW-088,Hawk Point Smiles,hawkpointsmiles.example,won,healthy,won,2024-04-23,,,5677,"lifetime $5,677 vs median $5,131"
+NW-089,Iris Point Dental Group,irispointdentalgroup.example,won,healthy,won,2024-10-11,,,6056,"lifetime $6,056 vs median $5,131"
+NW-090,Juniper Point Dentistry,juniperpointdentistry.example,won,healthy,won,2024-01-04,,,6718,"lifetime $6,718 vs median $5,131"
+NW-091,Kestrel Point Dental Care,kestrelpointdentalcare.example,won,healthy,won,2024-06-08,,,4352,"lifetime $4,352 vs median $5,131"
+NW-092,Linden Point Family Dental,lindenpointfamilydental.example,won,healthy,won,2024-02-19,,,8772,"lifetime $8,772 vs median $5,131"
+NW-093,Maple Point Smiles,maplepointsmiles.example,won,healthy,won,2023-10-14,,,5793,"lifetime $5,793 vs median $5,131"
+NW-094,North Point Dental Group,northpointdentalgroup.example,lost,,lost,2024-02-20,,,0,never closed
+NW-095,Oak Point Dentistry,oakpointdentistry.example,won,healthy,won,2023-07-05,,,6029,"lifetime $6,029 vs median $5,131"
+NW-096,Pine Point Dental Care,pinepointdentalcare.example,won,healthy,won,2023-11-05,,,5799,"lifetime $5,799 vs median $5,131"
+NW-097,Quail Point Family Dental,quailpointfamilydental.example,won,healthy,won,2023-02-20,,,8232,"lifetime $8,232 vs median $5,131"
+NW-098,Ridge Point Smiles,ridgepointsmiles.example,won,churned,lost,2024-08-06,,,2463,churned
+NW-099,Sage Point Dental Group,sagepointdentalgroup.example,won,healthy,won,2023-08-07,,,7076,"lifetime $7,076 vs median $5,131"
+NW-100,Tamarack Point Dentistry,tamarackpointdentistry.example,won,churned,lost,2023-08-31,,,1242,churned
+NW-101,Alder Grove Dental Care,aldergrovedentalcare.example,won,healthy,10X,2024-01-20,,,91474,"lifetime $91,474 vs median $5,131"
+NW-102,Bluff Grove Family Dental,bluffgrovefamilydental.example,won,healthy,won,2024-07-07,,,5792,"lifetime $5,792 vs median $5,131"
+NW-103,Cedar Grove Smiles,cedargrovesmiles.example,lost,,lost,2024-10-15,,,0,never closed
+NW-104,Dover Grove Dental Group,dovergrovedentalgroup.example,lost,,lost,2023-02-16,,,0,never closed
+NW-105,Elm Grove Dentistry,elmgrovedentistry.example,lost,,lost,2024-05-22,,,0,never closed
+NW-106,Fern Grove Dental Care,ferngrovedentalcare.example,won,churned,lost,2024-06-23,,,1965,churned
+NW-107,Glen Grove Family Dental,glengrovefamilydental.example,won,healthy,won,2023-10-04,,,6958,"lifetime $6,958 vs median $5,131"
+NW-108,Hawk Grove Smiles,hawkgrovesmiles.example,won,healthy,won,2023-01-15,,,5425,"lifetime $5,425 vs median $5,131"
+NW-109,Iris Grove Dental Group,irisgrovedentalgroup.example,won,churned,lost,2023-02-24,,,2397,churned
+NW-110,Juniper Grove Dentistry,junipergrovedentistry.example,won,healthy,won,2023-11-23,,,8923,"lifetime $8,923 vs median $5,131"
+NW-111,Kestrel Grove Dental Care,kestrelgrovedentalcare.example,won,churned,lost,2023-02-16,,,1798,churned
+NW-112,Linden Grove Family Dental,lindengrovefamilydental.example,won,churned,lost,2024-09-10,,,1804,churned
+NW-113,Maple Grove Smiles,maplegrovesmiles.example,won,healthy,won,2023-02-23,,,3966,"lifetime $3,966 vs median $5,131"
+NW-114,North Grove Dental Group,northgrovedentalgroup.example,won,healthy,won,2024-03-02,,,4145,"lifetime $4,145 vs median $5,131"
+NW-115,Oak Grove Dentistry,oakgrovedentistry.example,won,healthy,won,2024-06-27,,,6436,"lifetime $6,436 vs median $5,131"
+NW-116,Pine Grove Dental Care,pinegrovedentalcare.example,won,healthy,won,2024-05-07,,,4055,"lifetime $4,055 vs median $5,131"
+NW-117,Quail Grove Family Dental,quailgrovefamilydental.example,lost,,lost,2024-01-03,,,0,never closed
+NW-118,Ridge Grove Smiles,ridgegrovesmiles.example,lost,,lost,2023-07-14,,,0,never closed
+NW-119,Sage Grove Dental Group,sagegrovedentalgroup.example,won,healthy,won,2024-05-29,,,5039,"lifetime $5,039 vs median $5,131"
+NW-120,Tamarack Grove Dentistry,tamarackgrovedentistry.example,won,churned,lost,2023-01-10,,,1048,churned
+NW-121,Alder Harbor Dental Care,alderharbordentalcare.example,won,healthy,won,2024-07-08,,,3839,"lifetime $3,839 vs median $5,131"
+NW-122,Bluff Harbor Family Dental,bluffharborfamilydental.example,won,churned,lost,2024-10-08,,,1761,churned
+NW-123,Cedar Harbor Smiles,cedarharborsmiles.example,won,healthy,won,2024-05-21,,,5770,"lifetime $5,770 vs median $5,131"
+NW-124,Dover Harbor Dental Group,doverharbordentalgroup.example,won,healthy,won,2024-04-03,,,3981,"lifetime $3,981 vs median $5,131"
+NW-125,Elm Harbor Dentistry,elmharbordentistry.example,won,churned,lost,2023-09-22,,,2538,churned
+NW-126,Fern Harbor Dental Care,fernharbordentalcare.example,won,healthy,won,2023-10-25,,,7887,"lifetime $7,887 vs median $5,131"
+NW-127,Glen Harbor Family Dental,glenharborfamilydental.example,won,churned,lost,2024-08-17,,,2312,churned
+NW-128,Hawk Harbor Smiles,hawkharborsmiles.example,won,healthy,won,2024-03-18,,,3680,"lifetime $3,680 vs median $5,131"
+NW-129,Iris Harbor Dental Group,irisharbordentalgroup.example,won,healthy,10X,2023-03-19,,,137961,"lifetime $137,961 vs median $5,131"
+NW-130,Juniper Harbor Dentistry,juniperharbordentistry.example,lost,,lost,2024-05-21,,,0,never closed
+NW-131,Kestrel Harbor Dental Care,kestrelharbordentalcare.example,won,churned,lost,2024-11-04,,,2265,churned
+NW-132,Linden Harbor Family Dental,lindenharborfamilydental.example,won,healthy,won,2024-08-05,,,8810,"lifetime $8,810 vs median $5,131"
+NW-133,Maple Harbor Smiles,mapleharborsmiles.example,won,churned,lost,2023-11-09,,,2971,churned
+NW-134,North Harbor Dental Group,northharbordentalgroup.example,lost,,lost,2023-09-12,,,0,never closed
+NW-135,Oak Harbor Dentistry,oakharbordentistry.example,won,healthy,won,2024-02-10,,,8546,"lifetime $8,546 vs median $5,131"
+NW-136,Pine Harbor Dental Care,pineharbordentalcare.example,won,churned,lost,2024-07-07,,,2398,churned
+NW-137,Quail Harbor Family Dental,quailharborfamilydental.example,won,healthy,won,2024-04-10,,,3735,"lifetime $3,735 vs median $5,131"
+NW-138,Ridge Harbor Smiles,ridgeharborsmiles.example,won,healthy,won,2024-07-11,,,7224,"lifetime $7,224 vs median $5,131"
+NW-139,Sage Harbor Dental Group,sageharbordentalgroup.example,won,healthy,10X,2024-08-18,,,117088,"lifetime $117,088 vs median $5,131"
+NW-140,Tamarack Harbor Dentistry,tamarackharbordentistry.example,won,healthy,won,2023-10-08,,,3669,"lifetime $3,669 vs median $5,131"
+NW-141,Alder Mesa Dental Care,aldermesadentalcare.example,won,healthy,won,2024-10-31,,,8194,"lifetime $8,194 vs median $5,131"
+NW-142,Bluff Mesa Family Dental,bluffmesafamilydental.example,won,churned,lost,2024-05-15,,,1702,churned
+NW-143,Cedar Mesa Smiles,cedarmesasmiles.example,won,churned,lost,2023-12-07,,,2183,churned
+NW-144,Dover Mesa Dental Group,dovermesadentalgroup.example,won,healthy,won,2024-09-24,,,8905,"lifetime $8,905 vs median $5,131"
+NW-145,Elm Mesa Dentistry,elmmesadentistry.example,won,healthy,won,2023-01-04,,,8461,"lifetime $8,461 vs median $5,131"
+NW-146,Fern Mesa Dental Care,fernmesadentalcare.example,lost,,lost,2024-10-17,,,0,never closed
+NW-147,Glen Mesa Family Dental,glenmesafamilydental.example,won,healthy,won,2024-03-06,,,3900,"lifetime $3,900 vs median $5,131"
+NW-148,Hawk Mesa Smiles,hawkmesasmiles.example,won,healthy,won,2024-12-01,,,8203,"lifetime $8,203 vs median $5,131"
+NW-149,Iris Mesa Dental Group,irismesadentalgroup.example,won,healthy,won,2023-03-02,,,5392,"lifetime $5,392 vs median $5,131"
+NW-150,Juniper Mesa Dentistry,junipermesadentistry.example,won,churned,lost,2023-03-05,,,1534,churned
+NW-151,Kestrel Mesa Dental Care,kestrelmesadentalcare.example,won,healthy,won,2023-04-22,,,3297,"lifetime $3,297 vs median $5,131"
+NW-152,Linden Mesa Family Dental,lindenmesafamilydental.example,won,healthy,won,2024-09-01,,,7915,"lifetime $7,915 vs median $5,131"
+NW-153,Maple Mesa Smiles,maplemesasmiles.example,won,healthy,10X,2023-11-16,,,93179,"lifetime $93,179 vs median $5,131"
+NW-154,North Mesa Dental Group,northmesadentalgroup.example,lost,,lost,2024-05-11,,,0,never closed
+NW-155,Oak Mesa Dentistry,oakmesadentistry.example,lost,,lost,2023-04-05,,,0,never closed
+NW-156,Pine Mesa Dental Care,pinemesadentalcare.example,won,healthy,won,2024-06-24,,,4100,"lifetime $4,100 vs median $5,131"
+NW-157,Quail Mesa Family Dental,quailmesafamilydental.example,won,churned,lost,2023-01-12,,,1773,churned
+NW-158,Ridge Mesa Smiles,ridgemesasmiles.example,won,churned,lost,2024-09-12,,,2526,churned
+NW-159,Sage Mesa Dental Group,sagemesadentalgroup.example,won,healthy,won,2024-06-12,,,4185,"lifetime $4,185 vs median $5,131"
+NW-160,Tamarack Mesa Dentistry,tamarackmesadentistry.example,lost,,lost,2023-02-24,,,0,never closed
+NW-161,Alder Brook Dental Care,alderbrookdentalcare.example,won,healthy,won,2023-05-12,,,4220,"lifetime $4,220 vs median $5,131"
+NW-162,Bluff Brook Family Dental,bluffbrookfamilydental.example,won,healthy,won,2024-04-24,,,3795,"lifetime $3,795 vs median $5,131"
+NW-163,Cedar Brook Smiles,cedarbrooksmiles.example,lost,,lost,2023-01-20,,,0,never closed
+NW-164,Dover Brook Dental Group,doverbrookdentalgroup.example,won,healthy,won,2023-08-02,,,3745,"lifetime $3,745 vs median $5,131"
+NW-165,Elm Brook Dentistry,elmbrookdentistry.example,won,healthy,won,2023-11-15,,,5551,"lifetime $5,551 vs median $5,131"
+NW-166,Fern Brook Dental Care,fernbrookdentalcare.example,lost,,lost,2023-03-10,,,0,never closed
+NW-167,Glen Brook Family Dental,glenbrookfamilydental.example,won,healthy,won,2024-11-23,,,6229,"lifetime $6,229 vs median $5,131"
+NW-168,Hawk Brook Smiles,hawkbrooksmiles.example,lost,,lost,2023-01-13,,,0,never closed
+NW-169,Iris Brook Dental Group,irisbrookdentalgroup.example,won,churned,lost,2024-04-14,,,1264,churned
+NW-170,Juniper Brook Dentistry,juniperbrookdentistry.example,lost,,lost,2024-09-22,,,0,never closed
+NW-171,Kestrel Brook Dental Care,kestrelbrookdentalcare.example,lost,,lost,2023-12-12,,,0,never closed
+NW-172,Linden Brook Family Dental,lindenbrookfamilydental.example,won,healthy,won,2023-07-24,,,4545,"lifetime $4,545 vs median $5,131"
+NW-173,Maple Brook Smiles,maplebrooksmiles.example,won,healthy,10X,2024-04-26,,,84219,"lifetime $84,219 vs median $5,131"
+NW-174,North Brook Dental Group,northbrookdentalgroup.example,won,healthy,won,2023-05-25,,,3755,"lifetime $3,755 vs median $5,131"
+NW-175,Oak Brook Dentistry,oakbrookdentistry.example,won,healthy,10X,2023-07-17,,,129847,"lifetime $129,847 vs median $5,131"
+NW-176,Pine Brook Dental Care,pinebrookdentalcare.example,won,churned,lost,2023-02-03,,,1728,churned
+NW-177,Quail Brook Family Dental,quailbrookfamilydental.example,won,healthy,won,2024-03-13,,,3595,"lifetime $3,595 vs median $5,131"
+NW-178,Ridge Brook Smiles,ridgebrooksmiles.example,won,healthy,won,2024-05-09,,,4212,"lifetime $4,212 vs median $5,131"
+NW-179,Sage Brook Dental Group,sagebrookdentalgroup.example,won,healthy,10X,2023-11-22,,,91960,"lifetime $91,960 vs median $5,131"
+NW-180,Tamarack Brook Dentistry,tamarackbrookdentistry.example,lost,,lost,2023-01-19,,,0,never closed
+NW-181,Alder Field Dental Care,alderfielddentalcare.example,won,healthy,won,2024-07-24,,,6614,"lifetime $6,614 vs median $5,131"
+NW-182,Bluff Field Family Dental,blufffieldfamilydental.example,lost,,lost,2024-09-18,,,0,never closed
+NW-183,Cedar Field Smiles,cedarfieldsmiles.example,won,healthy,10X,2023-08-28,,,131711,"lifetime $131,711 vs median $5,131"
+NW-184,Dover Field Dental Group,doverfielddentalgroup.example,won,healthy,won,2023-07-22,,,8844,"lifetime $8,844 vs median $5,131"
+NW-185,Elm Field Dentistry,elmfielddentistry.example,lost,,lost,2023-07-21,,,0,never closed
+NW-186,Fern Field Dental Care,fernfielddentalcare.example,won,healthy,won,2023-09-08,,,3681,"lifetime $3,681 vs median $5,131"
+NW-187,Glen Field Family Dental,glenfieldfamilydental.example,won,healthy,10X,2023-09-30,,,136836,"lifetime $136,836 vs median $5,131"
+NW-188,Hawk Field Smiles,hawkfieldsmiles.example,won,churned,lost,2023-09-28,,,1060,churned
+NW-189,Iris Field Dental Group,irisfielddentalgroup.example,won,churned,lost,2023-05-06,,,1396,churned
+NW-190,Juniper Field Dentistry,juniperfielddentistry.example,won,healthy,won,2024-08-10,,,5978,"lifetime $5,978 vs median $5,131"
+NW-191,Kestrel Field Dental Care,kestrelfielddentalcare.example,won,healthy,won,2023-02-02,,,3624,"lifetime $3,624 vs median $5,131"
+NW-192,Linden Field Family Dental,lindenfieldfamilydental.example,lost,,lost,2023-05-22,,,0,never closed
+NW-193,Maple Field Smiles,maplefieldsmiles.example,won,churned,lost,2023-06-12,,,866,churned
+NW-194,North Field Dental Group,northfielddentalgroup.example,won,healthy,won,2024-08-06,,,6165,"lifetime $6,165 vs median $5,131"
+NW-195,Oak Field Dentistry,oakfielddentistry.example,won,healthy,10X,2023-12-07,,,103029,"lifetime $103,029 vs median $5,131"
+NW-196,Pine Field Dental Care,pinefielddentalcare.example,lost,,lost,2024-02-17,,,0,never closed
+NW-197,Quail Field Family Dental,quailfieldfamilydental.example,won,churned,lost,2023-10-16,,,2466,churned
+NW-198,Ridge Field Smiles,ridgefieldsmiles.example,lost,,lost,2024-02-23,,,0,never closed
+NW-199,Sage Field Dental Group,sagefielddentalgroup.example,won,healthy,won,2024-06-21,,,7308,"lifetime $7,308 vs median $5,131"
+NW-200,Tamarack Field Dentistry,tamarackfielddentistry.example,won,healthy,won,2024-09-22,,,3447,"lifetime $3,447 vs median $5,131"
+NW-201,Alder Bay Dental Care,alderbaydentalcare.example,lost,,lost,2023-11-09,,,0,never closed
+NW-202,Bluff Bay Family Dental,bluffbayfamilydental.example,lost,,lost,2023-09-06,,,0,never closed
+NW-203,Cedar Bay Smiles,cedarbaysmiles.example,won,healthy,won,2024-06-22,,,8692,"lifetime $8,692 vs median $5,131"
+NW-204,Dover Bay Dental Group,doverbaydentalgroup.example,lost,,lost,2023-03-12,,,0,never closed
+NW-205,Elm Bay Dentistry,elmbaydentistry.example,won,churned,lost,2024-07-31,,,2526,churned
+NW-206,Fern Bay Dental Care,fernbaydentalcare.example,won,healthy,won,2023-03-15,,,7643,"lifetime $7,643 vs median $5,131"
+NW-207,Glen Bay Family Dental,glenbayfamilydental.example,won,healthy,won,2024-08-12,,,7403,"lifetime $7,403 vs median $5,131"
+NW-208,Hawk Bay Smiles,hawkbaysmiles.example,won,healthy,won,2023-11-29,,,5451,"lifetime $5,451 vs median $5,131"
+NW-209,Iris Bay Dental Group,irisbaydentalgroup.example,won,healthy,10X,2023-05-25,,,116081,"lifetime $116,081 vs median $5,131"
+NW-210,Juniper Bay Dentistry,juniperbaydentistry.example,won,healthy,won,2024-04-10,,,3255,"lifetime $3,255 vs median $5,131"
+NW-211,Kestrel Bay Dental Care,kestrelbaydentalcare.example,won,healthy,won,2023-07-27,,,6871,"lifetime $6,871 vs median $5,131"
+NW-212,Linden Bay Family Dental,lindenbayfamilydental.example,won,churned,lost,2024-04-28,,,2250,churned
+NW-213,Maple Bay Smiles,maplebaysmiles.example,lost,,lost,2024-06-29,,,0,never closed
+NW-214,North Bay Dental Group,northbaydentalgroup.example,won,healthy,won,2023-04-19,,,3409,"lifetime $3,409 vs median $5,131"
+NW-215,Oak Bay Dentistry,oakbaydentistry.example,won,churned,lost,2023-05-19,,,2521,churned
+NW-216,Pine Bay Dental Care,pinebaydentalcare.example,won,churned,lost,2023-08-17,,,1493,churned
+NW-217,Quail Bay Family Dental,quailbayfamilydental.example,won,healthy,won,2023-08-30,,,5203,"lifetime $5,203 vs median $5,131"
+NW-218,Ridge Bay Smiles,ridgebaysmiles.example,won,healthy,won,2023-04-29,,,8423,"lifetime $8,423 vs median $5,131"
+NW-219,Sage Bay Dental Group,sagebaydentalgroup.example,won,healthy,won,2023-08-20,,,4479,"lifetime $4,479 vs median $5,131"
+NW-220,Tamarack Bay Dentistry,tamarackbaydentistry.example,won,healthy,won,2024-03-26,,,3624,"lifetime $3,624 vs median $5,131"
+NW-221,Alder Ford Dental Care,alderforddentalcare.example,won,healthy,10X,2024-08-23,,,99058,"lifetime $99,058 vs median $5,131"
+NW-222,Bluff Ford Family Dental,blufffordfamilydental.example,won,healthy,won,2023-10-19,,,3714,"lifetime $3,714 vs median $5,131"
+NW-223,Cedar Ford Smiles,cedarfordsmiles.example,won,healthy,won,2023-07-10,,,7490,"lifetime $7,490 vs median $5,131"
+NW-224,Dover Ford Dental Group,doverforddentalgroup.example,won,healthy,won,2024-08-21,,,8094,"lifetime $8,094 vs median $5,131"
+NW-225,Elm Ford Dentistry,elmforddentistry.example,won,churned,lost,2023-11-25,,,2273,churned
+NW-226,Fern Ford Dental Care,fernforddentalcare.example,lost,,lost,2024-10-11,,,0,never closed
+NW-227,Glen Ford Family Dental,glenfordfamilydental.example,won,churned,lost,2023-04-25,,,1476,churned
+NW-228,Hawk Ford Smiles,hawkfordsmiles.example,won,healthy,won,2023-09-23,,,5098,"lifetime $5,098 vs median $5,131"
+NW-229,Iris Ford Dental Group,irisforddentalgroup.example,won,healthy,won,2023-02-06,,,7087,"lifetime $7,087 vs median $5,131"
+NW-230,Juniper Ford Dentistry,juniperforddentistry.example,won,healthy,won,2023-07-04,,,6673,"lifetime $6,673 vs median $5,131"
+NW-231,Kestrel Ford Dental Care,kestrelforddentalcare.example,lost,,lost,2024-05-30,,,0,never closed
+NW-232,Linden Ford Family Dental,lindenfordfamilydental.example,won,healthy,won,2023-07-02,,,3594,"lifetime $3,594 vs median $5,131"
+NW-233,Maple Ford Smiles,maplefordsmiles.example,won,churned,lost,2023-02-25,,,1398,churned
+NW-234,North Ford Dental Group,northforddentalgroup.example,won,healthy,won,2023-09-29,,,8088,"lifetime $8,088 vs median $5,131"
+NW-235,Oak Ford Dentistry,oakforddentistry.example,won,healthy,won,2024-01-23,,,7182,"lifetime $7,182 vs median $5,131"
+NW-236,Pine Ford Dental Care,pineforddentalcare.example,won,healthy,won,2023-03-04,,,7881,"lifetime $7,881 vs median $5,131"
+NW-237,Quail Ford Family Dental,quailfordfamilydental.example,won,healthy,won,2023-05-12,,,8765,"lifetime $8,765 vs median $5,131"
+NW-238,Ridge Ford Smiles,ridgefordsmiles.example,won,churned,lost,2024-06-18,,,2664,churned
+NW-239,Sage Ford Dental Group,sageforddentalgroup.example,won,healthy,won,2023-04-04,,,7305,"lifetime $7,305 vs median $5,131"
+NW-240,Tamarack Ford Dentistry,tamarackforddentistry.example,won,healthy,won,2024-11-27,,,3626,"lifetime $3,626 vs median $5,131"
+NW-241,Alder Glade Dental Care,aldergladedentalcare.example,won,churned,lost,2023-05-02,,,1837,churned
+NW-242,Bluff Glade Family Dental,bluffgladefamilydental.example,won,healthy,won,2023-11-13,,,4861,"lifetime $4,861 vs median $5,131"
+NW-243,Cedar Glade Smiles,cedargladesmiles.example,won,churned,lost,2024-08-22,,,2450,churned
+NW-244,Dover Glade Dental Group,dovergladedentalgroup.example,won,healthy,won,2023-07-01,,,8690,"lifetime $8,690 vs median $5,131"
+NW-245,Elm Glade Dentistry,elmgladedentistry.example,won,healthy,10X,2023-02-20,,,81755,"lifetime $81,755 vs median $5,131"
+NW-246,Fern Glade Dental Care,ferngladedentalcare.example,won,healthy,won,2024-05-06,,,7501,"lifetime $7,501 vs median $5,131"
+NW-247,Glen Glade Family Dental,glengladefamilydental.example,won,healthy,won,2024-04-02,,,5527,"lifetime $5,527 vs median $5,131"
+NW-248,Hawk Glade Smiles,hawkgladesmiles.example,won,healthy,won,2023-07-29,,,6990,"lifetime $6,990 vs median $5,131"
+NW-249,Iris Glade Dental Group,irisgladedentalgroup.example,won,healthy,won,2023-10-09,,,5265,"lifetime $5,265 vs median $5,131"
+NW-250,Juniper Glade Dentistry,junipergladedentistry.example,lost,,lost,2024-08-03,,,0,never closed
+NW-251,Kestrel Glade Dental Care,kestrelgladedentalcare.example,won,churned,lost,2024-01-04,,,1428,churned
+NW-252,Linden Glade Family Dental,lindengladefamilydental.example,won,healthy,won,2023-11-26,,,3976,"lifetime $3,976 vs median $5,131"
+NW-253,Maple Glade Smiles,maplegladesmiles.example,won,healthy,won,2023-09-20,,,6124,"lifetime $6,124 vs median $5,131"
+NW-254,North Glade Dental Group,northgladedentalgroup.example,won,healthy,won,2024-09-14,,,6227,"lifetime $6,227 vs median $5,131"
+NW-255,Oak Glade Dentistry,oakgladedentistry.example,won,healthy,won,2023-02-02,,,7877,"lifetime $7,877 vs median $5,131"
+NW-256,Pine Glade Dental Care,pinegladedentalcare.example,won,healthy,won,2024-06-13,,,8685,"lifetime $8,685 vs median $5,131"
+NW-257,Quail Glade Family Dental,quailgladefamilydental.example,won,healthy,10X,2023-05-31,,,116419,"lifetime $116,419 vs median $5,131"
+NW-258,Ridge Glade Smiles,ridgegladesmiles.example,won,churned,lost,2024-01-31,,,1359,churned
+NW-259,Sage Glade Dental Group,sagegladedentalgroup.example,won,healthy,won,2024-09-17,,,6034,"lifetime $6,034 vs median $5,131"
+NW-260,Tamarack Glade Dentistry,tamarackgladedentistry.example,won,healthy,won,2024-08-02,,,8164,"lifetime $8,164 vs median $5,131"
+NW-261,Alder Heath Dental Care,alderheathdentalcare.example,lost,,lost,2023-03-10,,,0,never closed
+NW-262,Bluff Heath Family Dental,bluffheathfamilydental.example,won,healthy,won,2024-01-19,,,8460,"lifetime $8,460 vs median $5,131"
+NW-263,Cedar Heath Smiles,cedarheathsmiles.example,won,healthy,won,2023-05-03,,,6503,"lifetime $6,503 vs median $5,131"
+NW-264,Dover Heath Dental Group,doverheathdentalgroup.example,won,healthy,won,2024-05-24,,,5688,"lifetime $5,688 vs median $5,131"
+NW-265,Elm Heath Dentistry,elmheathdentistry.example,won,churned,lost,2024-11-12,,,1482,churned
+NW-266,Fern Heath Dental Care,fernheathdentalcare.example,lost,,lost,2023-06-04,,,0,never closed
+NW-267,Glen Heath Family Dental,glenheathfamilydental.example,won,healthy,won,2024-02-05,,,5527,"lifetime $5,527 vs median $5,131"
+NW-268,Hawk Heath Smiles,hawkheathsmiles.example,won,churned,lost,2024-05-22,,,2344,churned
+NW-269,Iris Heath Dental Group,irisheathdentalgroup.example,won,healthy,10X,2023-01-25,,,93771,"lifetime $93,771 vs median $5,131"
+NW-270,Juniper Heath Dentistry,juniperheathdentistry.example,won,healthy,won,2024-11-15,,,5435,"lifetime $5,435 vs median $5,131"
+NW-271,Kestrel Heath Dental Care,kestrelheathdentalcare.example,won,churned,lost,2023-02-01,,,2285,churned
+NW-272,Linden Heath Family Dental,lindenheathfamilydental.example,lost,,lost,2024-09-27,,,0,never closed
+NW-273,Maple Heath Smiles,mapleheathsmiles.example,won,healthy,won,2024-04-20,,,3559,"lifetime $3,559 vs median $5,131"
+NW-274,North Heath Dental Group,northheathdentalgroup.example,won,healthy,won,2024-11-30,,,3312,"lifetime $3,312 vs median $5,131"
+NW-275,Oak Heath Dentistry,oakheathdentistry.example,won,healthy,10X,2024-09-11,,,103888,"lifetime $103,888 vs median $5,131"
+NW-276,Pine Heath Dental Care,pineheathdentalcare.example,won,healthy,won,2023-01-01,,,4921,"lifetime $4,921 vs median $5,131"
+NW-277,Quail Heath Family Dental,quailheathfamilydental.example,won,healthy,won,2024-05-20,,,7481,"lifetime $7,481 vs median $5,131"
+NW-278,Ridge Heath Smiles,ridgeheathsmiles.example,won,healthy,won,2023-12-08,,,7593,"lifetime $7,593 vs median $5,131"
+NW-279,Sage Heath Dental Group,sageheathdentalgroup.example,won,healthy,10X,2024-02-10,,,114554,"lifetime $114,554 vs median $5,131"
+NW-280,Tamarack Heath Dentistry,tamarackheathdentistry.example,won,churned,lost,2024-07-31,,,2809,churned
+NW-281,Alder Isle Dental Care,alderisledentalcare.example,won,healthy,won,2024-05-25,,,8472,"lifetime $8,472 vs median $5,131"
+NW-282,Bluff Isle Family Dental,bluffislefamilydental.example,won,healthy,won,2023-05-10,,,4456,"lifetime $4,456 vs median $5,131"
+NW-283,Cedar Isle Smiles,cedarislesmiles.example,lost,,lost,2023-11-14,,,0,never closed
+NW-284,Dover Isle Dental Group,doverisledentalgroup.example,won,healthy,won,2023-06-16,,,6937,"lifetime $6,937 vs median $5,131"
+NW-285,Elm Isle Dentistry,elmisledentistry.example,won,healthy,10X,2024-02-11,,,128195,"lifetime $128,195 vs median $5,131"
+NW-286,Fern Isle Dental Care,fernisledentalcare.example,lost,,lost,2023-09-15,,,0,never closed
+NW-287,Glen Isle Family Dental,glenislefamilydental.example,won,healthy,won,2024-07-31,,,4678,"lifetime $4,678 vs median $5,131"
+NW-288,Hawk Isle Smiles,hawkislesmiles.example,lost,,lost,2024-09-29,,,0,never closed
+NW-289,Iris Isle Dental Group,irisisledentalgroup.example,won,healthy,won,2024-09-28,,,4645,"lifetime $4,645 vs median $5,131"
+NW-290,Juniper Isle Dentistry,juniperisledentistry.example,won,healthy,won,2024-08-22,,,3112,"lifetime $3,112 vs median $5,131"
+NW-291,Kestrel Isle Dental Care,kestrelisledentalcare.example,won,churned,lost,2024-03-05,,,1910,churned
+NW-292,Linden Isle Family Dental,lindenislefamilydental.example,lost,,lost,2023-05-23,,,0,never closed

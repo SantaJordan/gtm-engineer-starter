@@ -1,0 +1,35 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Customer data and generated work. Keep these out of git, always.
+# Raw exports live in wiki/raw/ or private/; your own lists at the repo root.
+wiki/raw/*
+!wiki/raw/.gitkeep
+private/
+/labels.csv
+/companies.csv
+/customers.csv
+/icp.json
+_private/
+data/
+outputs/
+out/
+dossiers/
+packets/
+audits/
+# ...except the synthetic test fixtures the judge's tests need
+!skills/calibrated-judge/fixtures/packets/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# Editors and OS
+.DS_Store
+.idea/
+.vscode/

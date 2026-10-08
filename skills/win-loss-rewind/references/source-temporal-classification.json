@@ -1,0 +1,68 @@
+{
+  "_doc": "Temporal classification of every Phase 2 source. Consumed at runtime by backcast_validate.outcome_leakage_check() and passed into the Phase 5 hypothesis generator so every hypothesis declares its best-case visibility tag honestly. Axes: `class` = does the API call return records carrying their own intrinsic date (point_in_time_record) or only today's state (current_state_only)? `wayback_friendly` = can an archive.org capture of the same public URL substitute a historical snapshot? `publication_lag_days` = conservative haircut between a record's intrinsic date and the date the world could actually see it (a permit filed in March may not appear in the portal until June); knowable_by = record_date + lag. See references/time-travel.md.",
+  "sources": {
+    "firecrawl_map": {
+      "class": "current_state_only",
+      "wayback_friendly": true,
+      "publication_lag_days": 0,
+      "notes": "Site structure today. Historical structure provable via archive.org captures of the same pages."
+    },
+    "firecrawl_scrape": {
+      "class": "current_state_only",
+      "wayback_friendly": true,
+      "publication_lag_days": 0,
+      "notes": "Homepage content today. Historical content provable via archive.org."
+    },
+    "exa": {
+      "class": "point_in_time_record",
+      "wayback_friendly": true,
+      "publication_lag_days": 3,
+      "record_date_field": "results.published_date",
+      "notes": "Results carry published_date; treat as RECORD_DATED_BEFORE when published_date + lag <= reference date. Indexing lag small but nonzero."
+    },
+    "openweb_ninja": {
+      "class": "current_state_only",
+      "wayback_friendly": false,
+      "publication_lag_days": null,
+      "notes": "Dynamic API panel (Maps/business data), not a crawled page. No archive substitute — at best RECORD_DATED_BEFORE via a corroborating dated record, else RETRO_ASSUMED forever."
+    },
+    "apify_linkedin": {
+      "class": "current_state_only",
+      "wayback_friendly": "opportunistic",
+      "opportunistic_url_field": "linkedin_url",
+      "publication_lag_days": null,
+      "notes": "LinkedIn auth-walls crawlers, so archived 200-OK company-page captures are rare (empirical spot-check 2026-07: a mid-size SaaS company page had ZERO 2019-2026) — but where a capture DOES exist it can prove presence. Asymmetric rule: bracket() PRESENT on the company's linkedin_url earns ARCHIVED_BEFORE; absent/no-captures is ALWAYS unknown (a login-wall capture is indistinguishable from true absence). Steady route remains RECORD_DATED_BEFORE via an independent dated record, else RETRO_ASSUMED."
+    },
+    "serper_news": {
+      "class": "point_in_time_record",
+      "wayback_friendly": true,
+      "publication_lag_days": 1,
+      "record_date_field": "items.date",
+      "notes": "News items carry publish dates."
+    },
+    "state_open_data_portal": {
+      "class": "point_in_time_record",
+      "wayback_friendly": "varies",
+      "publication_lag_days": 45,
+      "notes": "Records carry filing dates, but portal publication lag varies wildly by state and record type — default 45-day haircut, TIGHTEN per portal by checking an archive.org capture of the portal itself (a capture showing the record proves it was public by the capture date). Operator should override per wired portal."
+    },
+    "vertical_warehouse_generic": {
+      "class": "point_in_time_record",
+      "wayback_friendly": "varies",
+      "publication_lag_days": 60,
+      "notes": "Classify per warehouse when the operator wires one. CAUTION: many warehouses overwrite in place (e.g., a ratings field holding only the CURRENT rating) — if the field is current-state, reclassify as current_state_only regardless of the warehouse having dates elsewhere."
+    },
+    "wayback": {
+      "class": "point_in_time_record",
+      "wayback_friendly": true,
+      "publication_lag_days": 0,
+      "notes": "archive.org itself, via scripts/wayback_timetravel.py. A capture at date D proves visibility at D by construction. The prover behind ARCHIVED_BEFORE tags."
+    }
+  },
+  "default_unclassified": {
+    "class": "current_state_only",
+    "wayback_friendly": "unknown",
+    "publication_lag_days": null,
+    "notes": "Unknown sources are assumed current-state-only (the conservative reading) until the operator classifies them here."
+  }
+}

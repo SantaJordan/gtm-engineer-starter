@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gtm-engineer-starter.example/schemas/dossier-builder/dossier.prospect.schema.json",
+  "title": "Prospect Dossier",
+  "description": "Per-account pre-customer dossier. Anti-leakage anchored — every event filtered against t_anchor (first_call.date OR opp.created_date). Strips post-sale signals.",
+  "type": "object",
+  "required": [
+    "account_id", "schema_version", "rebuilt_at", "mode",
+    "account_name", "outcome", "headline",
+    "timeline", "structured_signals",
+    "linking_trust", "data_completeness", "flags",
+    "provenance_index", "notes_from_revops"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "account_id": {"type": "string"},
+    "schema_version": {"type": "string", "const": "dossier-builder/1.0.0"},
+    "rebuilt_at": {"type": "string", "format": "date-time"},
+    "mode": {"type": "string", "const": "prospect"},
+    "account_name": {"type": "string"},
+    "account_name_provenance": {"$ref": "#/$defs/provenance"},
+    "outcome": {
+      "type": "string",
+      "enum": ["open", "lost", "won_recently_flipped"]
+    },
+    "headline": {"type": "string"},
+    "summary": {
+      "type": "object",
+      "properties": {
+        "one_liner": {"type": "string"},
+        "three_bullets": {"type": "array", "items": {"type": "string"}, "maxItems": 3}
+      }
+    },
+    "timeline": {
+      "type": "array",
+      "items": {"$ref": "source_event_envelope.schema.json"}
+    },
+    "customer_voice": {
+      "type": "array",
+      "description": "Additive analysis-ready view of customer-voice turns derived from per-event transcript_tagged (W4a / Speaker Attribution Protocol). Customer-only; verbatim full transcript retained on the events.",
+      "items": {
+        "type": "object",
+        "required": ["elicitation", "text"],
+        "properties": {
+          "call_id": {"type": "string"},
+          "date": {"type": "string", "format": "date-time"},
+          "speaker_label": {"type": "string"},
+          "elicitation": {"type": "string", "enum": ["unprompted", "led", "seller_echo"]},
+          "text": {"type": "string", "description": "Verbatim customer turn"}
+        }
+      }
+    },
+    "speaker_attribution_summary": {
+      "type": "object",
+      "description": "Per-account roll-up of transcript-turn role/elicitation tagging (W4a / Speaker Attribution Protocol).",
+      "properties": {
+        "n_turns": {"type": "integer", "minimum": 0},
+        "n_company": {"type": "integer", "minimum": 0},
+        "n_customer": {"type": "integer", "minimum": 0},
+        "n_unknown": {"type": "integer", "minimum": 0},
+        "n_unprompted": {"type": "integer", "minimum": 0},
+        "n_led": {"type": "integer", "minimum": 0},
+        "n_seller_echo": {"type": "integer", "minimum": 0}
+      }
+    },
+    "structured_signals": {
+      "type": "object",
+      "required": ["t_anchor"],
+      "additionalProperties": false,
+      "properties": {
+        "t_anchor": {
+          "type": "object",
+          "required": ["date", "rule"],
+          "properties": {
+            "date": {"type": "string", "format": "date-time"},
+            "rule": {"type": "string", "enum": ["first_call_date", "opp_created_date", "explicit_override"]}
+          }
+        },
+        "lead_attribution": {
+          "type": "object",
+          "properties": {
+            "lead_source_aggregated": {"type": "string"},
+            "lead_source_trust": {"type": "string", "enum": ["trusted", "junk_triangulated", "suspect_zoominfo", "unknown"]},
+            "triangulated_source": {"type": ["string", "null"]},
+            "triangulation_evidence": {"type": "array", "items": {"type": "string"}},
+            "high_intent_keywords": {"type": "array", "items": {"type": "string"}}
+          }
+        },
+        "campaign_attribution": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "deal_shape": {
+          "type": "object",
+          "properties": {
+            "stage": {"type": ["string", "null"]},
+            "monthly_revenue": {"type": ["number", "null"], "description": "Pipeline $ — never the deal-value/Amount field"},
+            "incremental_mrr": {"type": ["number", "null"], "description": "Bookings $"},
+            "stage_one_entered_date": {"type": ["string", "null"]},
+            "stage_one_exited_date": {"type": ["string", "null"]},
+            "rep_forecast_quarter": {"type": ["string", "null"]},
+            "rep_notes": {"type": ["string", "null"]},
+            "competitor_from_gong": {"type": ["string", "null"]}
+          }
+        },
+        "funnel_position": {
+          "type": "object",
+          "properties": {
+            "primary_contact_persona": {"type": ["string", "null"]},
+            "mge_date": {"type": ["string", "null"]},
+            "mql_date": {"type": ["string", "null"]},
+            "demo_set_date": {"type": ["string", "null"]},
+            "demo_completed": {"type": ["boolean", "null"]}
+          }
+        },
+        "icp_fit": {
+          "type": "object",
+          "properties": {
+            "verdict": {"type": "string", "enum": ["fit", "borderline", "not_fit", "unknown"]},
+            "basis": {"type": "string"}
+          }
+        },
+        "pre_first_call_evidence": {
+          "type": "array",
+          "items": {"$ref": "source_event_envelope.schema.json"},
+          "description": "Subset of timeline strictly before t_anchor"
+        },
+        "post_first_call_evidence": {
+          "type": "array",
+          "items": {"$ref": "source_event_envelope.schema.json"},
+          "description": "Subset of timeline at or after t_anchor"
+        },
+        "n_calls_so_far": {"type": "integer", "minimum": 0},
+        "multi_stakeholder": {"type": "boolean"}
+      }
+    },
+    "linking_trust": {"$ref": "dossier.customer.schema.json#/properties/linking_trust"},
+    "data_completeness": {"$ref": "dossier.customer.schema.json#/properties/data_completeness"},
+    "flags": {"$ref": "dossier.customer.schema.json#/properties/flags"},
+    "provenance_index": {
+      "type": "object",
+      "additionalProperties": {"$ref": "#/$defs/provenance"}
+    },
+    "notes_from_revops": {
+      "type": "array",
+      "items": {"$ref": "tiebreaker.schema.json"}
+    }
+  },
+  "$defs": {
+    "provenance": {
+      "type": "object",
+      "required": ["value", "rule", "source"],
+      "properties": {
+        "value": {},
+        "rule": {"type": "string"},
+        "source": {"type": "string"},
+        "raw_ref": {"type": "object"}
+      }
+    }
+  }
+}

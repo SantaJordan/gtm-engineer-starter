@@ -1,0 +1,263 @@
+# DQ check catalog — extensible per-engagement via outputs/dossiers/<client>/dq-checks.local.yaml
+# Each check has:
+#   id          — stable identifier
+#   family      — distributional | fill_rate | identity | cross_system_join | self_domain_trap | cohort_sanity | temporal | paradox
+#   severity    — block | warn | note
+#   applies_to  — raw | linked | both
+#   modes       — [customer], [prospect], or [customer, prospect]
+#   spec        — check-specific config (thresholds etc.)
+#   description — one-sentence what it catches
+
+checks:
+
+  # ─────────── DISTRIBUTIONAL ───────────
+
+  - id: mrr_p99_to_median_ratio
+    family: distributional
+    severity: warn
+    applies_to: linked
+    modes: [customer]
+    spec:
+      threshold_ratio: 50
+    description: "MRR p99/median > 50× usually means either real enterprise outliers or join errors. Surface either way."
+
+  - id: round_number_cluster
+    family: distributional
+    severity: warn
+    applies_to: linked
+    modes: [customer, prospect]
+    spec:
+      values: [1000, 5000, 10000, 50000, 100000, 1000000]
+      threshold_pct: 0.10
+    description: ">10% of MRR values clustering on round numbers — likely estimates, not actuals."
+
+  - id: arr_slope_sanity
+    family: distributional
+    severity: warn
+    applies_to: linked
+    modes: [customer]
+    spec:
+      mom_spike_pct: 0.50
+      min_tenure_months: 12
+    description: "Month-over-month MRR change >50% on tenured accounts — retroactive correction or billing-system changeover."
+
+  - id: zero_mrr_on_active
+    family: distributional
+    severity: warn
+    applies_to: linked
+    modes: [customer]
+    spec:
+      threshold_pct_of_cohort: 0.02
+    description: ">2% of cohort marked customer/active with MRR=0 — missing data, not real zero-revenue customers."
+
+  - id: apple_at_20
+    family: distributional
+    severity: warn
+    applies_to: linked
+    modes: [customer, prospect]
+    spec:
+      brand_names: [Apple, Microsoft, Google, Amazon, Walmart, JPMorgan, Goldman, Tesla, Meta, Netflix, Adobe, Salesforce, Oracle, IBM, Intel]
+      mrr_lt: 1000
+    description: "Brand-name account with MRR < $1K — almost always a join error, not a real $20 trial."
+
+  - id: future_close_date
+    family: distributional
+    severity: block
+    applies_to: linked
+    modes: [customer, prospect]
+    spec: {}
+    description: "Any close_date > today is corruption. Block."
+
+  - id: future_event_date
+    family: distributional
+    severity: block
+    applies_to: both
+    modes: [customer, prospect]
+    spec: {}
+    description: "Any timeline event with date > today is corruption. Block."
+
+  # ─────────── FILL_RATE ───────────
+
+  - id: critical_fields_fill_rate
+    family: fill_rate
+    severity: block
+    applies_to: linked
+    modes: [customer, prospect]
+    spec:
+      threshold_pct: 0.95
+      fields: [account_name, canonical_id, primary_email_or_website]
+    description: "Critical fields must be ≥95% populated. Below that the cohort is unfit for analysis."
+
+  - id: important_fields_fill_rate
+    family: fill_rate
+    severity: warn
+    applies_to: linked
+    modes: [customer, prospect]
+    spec:
+      threshold_pct: 0.80
+      fields: [industry_or_vertical, company_age, last_activity_date]
+    description: "Important fields should be ≥80% populated. Below that, segmentation analyses lose power."
+
+  # ─────────── IDENTITY ───────────
+
+  - id: email_format_invalid
+    family: identity
+    severity: warn
+    applies_to: raw
+    modes: [customer, prospect]
+    spec:
+      regex: '^[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}$'
+      threshold_pct: 0.02
+    description: ">2% malformed email addresses — data entry or import issue."
+
+  - id: name_test_fake_demo_regex
+    family: identity
+    severity: block
+    applies_to: raw
+    modes: [customer, prospect]
+    spec:
+      regex: '(?i)\b(test|fake|demo|sandbox|qa|\[internal\])\b'
+    description: "Account names matching test/fake/demo regex must be excluded — pulling them risks $1M+ ARR inflation."
+
+  - id: dup_name_diff_ids
+    family: identity
+    severity: warn
+    applies_to: raw
+    modes: [customer, prospect]
+    spec: {}
+    description: "Same account name with multiple distinct IDs — possible merge candidates or genuine multi-entity."
+
+  - id: sf_id_18char_format
+    family: identity
+    severity: warn
+    applies_to: raw
+    modes: [customer, prospect]
+    spec:
+      regex: '^[a-zA-Z0-9]{15}([a-zA-Z0-9]{3})?$'
+    description: "Salesforce IDs must be 15 or 18 chars alphanumeric. Format mismatches likely indicate phantom IDs."
+
+  # ─────────── CROSS_SYSTEM_JOIN ───────────
+
+  - id: pct_joinable_to_calls
+    family: cross_system_join
+    severity: warn
+    applies_to: linked
+    modes: [customer]
+    spec:
+      threshold_pct: 0.30
+    description: "<30% of customers joinable to a call recording — either no calls system or join is broken."
+
+  - id: pct_joinable_to_billing
+    family: cross_system_join
+    severity: warn
+    applies_to: linked
+    modes: [customer]
+    spec:
+      threshold_pct: 0.90
+    description: "<90% of customers joinable to billing is suspicious — billing should be near-complete coverage."
+
+  - id: fuzzy_join_fraction
+    family: cross_system_join
+    severity: warn
+    applies_to: linked
+    modes: [customer, prospect]
+    spec:
+      max_threshold: 0.20
+    description: ">20% of joins relying on fuzzy/email-domain match — dossier ships with linking_trust capped at medium."
+
+  - id: spot_check_100_records
+    family: cross_system_join
+    severity: warn
+    applies_to: linked
+    modes: [customer, prospect]
+    spec:
+      sample_size: 100
+    description: "Render 100 random joined records to human at W2b for verification."
+
+  # ─────────── SELF_DOMAIN_TRAP ───────────
+
+  - id: self_domain_strip_applied
+    family: self_domain_trap
+    severity: block
+    applies_to: linked
+    modes: [customer, prospect]
+    spec: {}
+    description: "Identity-linking agent MUST have stripped tenant_domain before email-domain joins. If `tenant_domain_strip` block is missing in link_evidence, BLOCK."
+
+  # ─────────── COHORT_SANITY ───────────
+
+  - id: cohort_icp_adherence_200
+    family: cohort_sanity
+    severity: warn
+    applies_to: linked
+    modes: [customer, prospect]
+    spec:
+      sample_size: 200
+      script: scripts/web_sanity_sample.py
+    description: "200-record web sample to verify accounts are actually in the stated ICP. a fifth of a churned cohort being outside the ICP is not unusual."
+
+  # ─────────── TEMPORAL ───────────
+
+  - id: bulk_import_date_cluster
+    family: temporal
+    severity: warn
+    applies_to: raw
+    modes: [customer, prospect]
+    spec:
+      cluster_threshold_pct: 0.01
+      min_cluster_size: 50
+    description: ">1% of cohort sharing identical CreatedDate is a bulk-import fingerprint — tag tenure as uncertain."
+
+  - id: mql_after_opp_created
+    family: temporal
+    severity: warn
+    applies_to: linked
+    modes: [prospect]
+    spec: {}
+    description: "MQL date after Opportunity created date — should never happen."
+
+  - id: stage_inversion
+    family: temporal
+    severity: warn
+    applies_to: linked
+    modes: [prospect]
+    spec: {}
+    description: "Stage transitions out of order (Stage_3_In < Stage_2_In) — corruption or manual edits."
+
+  # ─────────── PARADOX ───────────
+
+  - id: mrr_pos_no_calls_180d
+    family: paradox
+    severity: warn
+    applies_to: linked
+    modes: [customer]
+    spec:
+      no_calls_days: 180
+      mrr_min: 1
+    description: "Customer with positive MRR and zero calls in 180 days — either silent customer, missed calls, or join error."
+
+  - id: customer_but_cancelled_in_billing
+    family: paradox
+    severity: block
+    applies_to: linked
+    modes: [customer]
+    spec: {}
+    description: "outcome=active in CRM but billing has cancellation event — system-of-record conflict, must reconcile before ship."
+
+  - id: cross_source_mrr_mismatch
+    family: paradox
+    severity: warn
+    applies_to: linked
+    modes: [customer]
+    spec:
+      threshold_pct: 0.10
+      cohort_pct: 0.05
+    description: ">5% of cohort has MRR sources disagreeing >10% — pick one canonical, surface rest as rejected."
+
+  - id: same_field_two_objects
+    family: paradox
+    severity: warn
+    applies_to: raw
+    modes: [customer, prospect]
+    spec: {}
+    description: "Same field name populated on multiple object types (e.g. Account.X and SBQQ.X) — pin object path."
