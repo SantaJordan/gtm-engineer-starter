@@ -42,19 +42,35 @@ if not external_domains:
     return INDETERMINATE  # nothing to match on
 ```
 
+`scripts/join_test.py` applies this to every key column that holds domains,
+emails or websites: values are normalised to a bare domain, and any value equal
+to the tenant domain (or a subdomain of it) is removed on BOTH sides before
+matching. `tenant_domain_strip` reports `excluded_left`, `excluded_right` and
+`false_matches_avoided` (left rows that would have matched only through the
+tenant domain), all counted from what was actually removed.
+
 This eliminates the self-domain false-match class. The `tenant_domain` field in `audit_context.json` is the only place the customer's own domain lives — every join check must consult it.
 
 If `tenant_domain` is not set at W0, the audit BLOCKS at W3 with: "Set tenant_domain at W0 before running join inference. Required to prevent self-domain-trap false matches."
 
 ## Key cardinality (mandatory)
 
-Coverage alone can pass a join that doubles revenue. `scripts/join_test.py` also
-checks whether the key repeats:
+Coverage alone can pass a join that doubles revenue. `scripts/join_test.py`
+measures, from the data, whether the key repeats on each side, and decides which
+side must be unique from each table's columns (never its filename):
 
-- **A table's own ID repeats** (for example `accounts.csv` lists an `account_id`
-  twice): every row on the other side joins to two rows, so amounts are summed
-  twice. Verdict `DUPLICATE_KEYS_MULTIPLY_ROWS`, `linking_trust = low`, gate BLOCK.
-  Fix the duplicate rows (or pick the authoritative one) before building.
+- A key is a table's **own ID** when it is that table's only ID-like column and
+  the table describes the entity (a name, domain, segment ... column) rather than
+  money or events (an amount, MRR, invoice ... column). Declare any other key
+  with `--unique-key <file>.<column>` (repeatable).
+- **A table's own ID repeats** (an accounts export lists an `account_id` twice,
+  whatever the file is called): every row on the other side joins to two rows,
+  so amounts are summed twice. Verdict `DUPLICATE_KEYS_MULTIPLY_ROWS`,
+  `linking_trust = low`, gate BLOCK. Fix the duplicate rows (or pick the
+  authoritative one) before building.
+- **One side repeats and neither table's shape says which side must be unique**:
+  verdict `KEY_OWNER_UNVERIFIED`, a warning, `linking_trust` capped at medium.
+  Declare the unique side with `--unique-key` to settle it.
 - **Two sibling tables share a parent's key** (`contacts.account_id` and
   `invoices.account_id`, both repeating): not a direct join. Verdict
   `SIBLING_TABLES_SHARE_A_KEY`, `linking_trust = not_a_direct_join`, a warning;

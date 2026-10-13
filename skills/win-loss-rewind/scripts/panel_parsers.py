@@ -43,7 +43,7 @@ _COMPLIANCE_RX = ("/compliance", "/hipaa", "/soc2", "/soc-2", "/gdpr", "/securit
 FIELD_TYPES: dict[str, dict[str, str]] = {
     "firecrawl_map": {"page_count": "int", "has_careers_page": "bool", "has_pricing_page": "bool",
                       "has_investor_page": "bool", "has_compliance_page": "bool",
-                      "sample_urls": "list"},
+                      "sample_urls": "list", "failed_link_count": "int"},
     "firecrawl_scrape": {"title": "str", "meta_description": "str", "markdown_excerpt": "str",
                          "page_text": "str", "copyright_year": "int", "location_count": "int",
                          "mentions_online_booking": "bool"},
@@ -188,18 +188,35 @@ def parse_firecrawl_map(body: dict) -> dict:
         return _fail("firecrawl_map", err)
     if not isinstance(body.get("links", body.get("urls")), list):
         return _fail("firecrawl_map", "no link list in the response")
-    links = body.get("links") or body.get("urls") or []
-    if links and isinstance(links[0], dict):
-        links = [x.get("url", "") for x in links]
-    lc = [l.lower() for l in links if l]
+    raw_links = body.get("links") or body.get("urls") or []
+    # A link object can carry its own failure (success:false, an error, a
+    # non-2xx status). It is dropped before any page is looked for, through
+    # the same failure_reason() as every other record.
+    good, n_failed = [], 0
+    for x in raw_links:
+        if isinstance(x, dict):
+            if failure_reason(x, "link") is not None:
+                n_failed += 1
+                continue
+            x = x.get("url", "")
+        if isinstance(x, str) and x:
+            good.append(x)
+    if raw_links and not good:
+        return _fail("firecrawl_map", "every link in the response failed")
+    lc = [l.lower() for l in good]
 
     def has(pats):
-        return any(any(p in l for p in pats) for l in lc)
+        # Found among the good links: True. Not found, but some links failed:
+        # the missing page may be one of them, so UNKNOWN (None), never False.
+        if any(any(p in l for p in pats) for l in lc):
+            return True
+        return None if n_failed else False
 
     return _ok("firecrawl_map", {
         "page_count": len(lc), "has_careers_page": has(_CAREERS_RX),
         "has_pricing_page": has(_PRICING_RX), "has_investor_page": has(_INVESTOR_RX),
-        "has_compliance_page": has(_COMPLIANCE_RX), "sample_urls": lc[:25]})
+        "has_compliance_page": has(_COMPLIANCE_RX), "sample_urls": lc[:25],
+        "failed_link_count": n_failed})
 
 
 def parse_exa(body: dict) -> dict:
@@ -208,8 +225,11 @@ def parse_exa(body: dict) -> dict:
         return _fail("exa", err)
     if not isinstance(body.get("results"), list):
         return _fail("exa", "no results list in the response")
+    # Exa reports each page fetch in a separate `statuses` array. Every status
+    # record goes through failure_reason() (status "error", success:false, an
+    # object error, a non-2xx code); a failed one drops the matching result.
     failed_ids = {st.get("id") for st in (body.get("statuses") or [])
-                  if isinstance(st, dict) and str(st.get("status", "")).lower() == "error"}
+                  if isinstance(st, dict) and failure_reason(st, "status record") is not None}
     results = [x for x in (body.get("results") or [])
                if not _record_failed(x) and x.get("id", object()) not in failed_ids]
     if body.get("results") and not results:

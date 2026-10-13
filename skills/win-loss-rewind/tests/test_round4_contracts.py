@@ -214,6 +214,49 @@ def test_record_success_false_and_object_error_are_unknown_never_firm(monkeypatc
         assert bv.verify_cell_firm(hyp, panel, provisional_present=True)["firm_present"] is None
 
 
+def test_failed_map_links_are_dropped_never_present_or_absent():
+    """Regression: a careers link with success:false must not make the page
+    present; an about link with an object error must not make it absent."""
+    careers = {"observability_source": "firecrawl_map", "queryable_field": "has_careers_page"}
+    for rec in ({"url": "https://demo.example/careers", "success": False},
+                {"url": "https://demo.example/about", "error": {"message": "failed"}},
+                {"url": "https://demo.example/careers", "statusCode": 503}):
+        blob = pp.parse_firecrawl_map({"links": [rec]})
+        assert sp.signal_state(careers, {"signal_panel": {"firecrawl_map": blob}}) == "unknown", rec
+    # A good link elsewhere plus a failed one: careers is not provably absent.
+    blob = pp.parse_firecrawl_map({"links": [{"url": "https://demo.example/"},
+                                             {"url": "https://demo.example/x", "success": False}]})
+    assert blob["success"] is True and blob["data"]["failed_link_count"] == 1
+    assert sp.signal_state(careers, {"signal_panel": {"firecrawl_map": blob}}) == "unknown"
+    # A good careers link is still present; plain string links still work.
+    blob = pp.parse_firecrawl_map({"links": [{"url": "https://demo.example/careers"},
+                                             {"url": "https://demo.example/x", "error": "x"}]})
+    assert sp.signal_state(careers, {"signal_panel": {"firecrawl_map": blob}}) == "present"
+    blob = pp.parse_firecrawl_map({"links": ["https://demo.example/", "https://demo.example/blog"]})
+    assert sp.signal_state(careers, {"signal_panel": {"firecrawl_map": blob}}) == "absent"
+
+
+def test_failed_exa_status_records_are_unknown_never_firm():
+    """Regression: every Exa status record goes through failure_reason()."""
+    import backcast_validate as bv
+    hyp = {"hypothesis_id": "H", "signal": "hiring compliance", "observability_source": "exa",
+           "queryable_field": "results.text_excerpt",
+           "predicate": {"op": "regex", "value": "hiring a compliance officer"},
+           "record_date_field": "results.published_date",
+           "temporal_provability": {"best_case_tag": "RECORD_DATED_BEFORE", "how": "date"}}
+    result = {"id": "u1", "url": "https://news.example/hiring",
+              "text": "Acme is hiring a compliance officer", "publishedDate": "2024-01-01"}
+    for failure in ({"success": False}, {"error": {"message": "page fetch failed"}},
+                    {"statusCode": 503}, {"status": "error"}):
+        blob = pp.parse_exa({"results": [result], "statuses": [{"id": "u1", **failure}]})
+        panel = {"customer_id": "c", "domain": "c.example", "outcome": "won",
+                 "close_date": "2024-06-01", "signal_panel": {"exa": blob}}
+        cell = bv.verify_cell_firm(hyp, panel, provisional_present=True)
+        assert cell["firm_present"] is None, failure
+    ok = pp.parse_exa({"results": [result], "statuses": [{"id": "u1", "status": "success"}]})
+    assert ok["success"] is True and ok["data"]["count"] == 1
+
+
 def test_one_failure_helper_covers_body_and_record():
     for bad in ({"success": False}, {"success": "false"}, {"ok": False}, {"error": {"code": 1}},
                 {"error": "x"}, {"errors": ["x"]}, {"status": "ERROR"}, {"statusCode": 503},

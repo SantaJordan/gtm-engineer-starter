@@ -197,3 +197,68 @@ def test_gtm_no_dotenv_turns_the_loader_off(tmp_path):
     p = subprocess.run([sys.executable, "-c", code], cwd=tmp_path, env=env,
                        capture_output=True, text=True)
     assert p.stdout.strip() == "None", p.stderr[-800:]
+
+
+# ------------------------------------------------------------- data-driven keys + tenant strip
+
+def _dup_accounts_run(tmp_path, filename, extra=()):
+    data = tmp_path / filename.replace(".", "_")
+    data.mkdir()
+    (data / filename).write_text("account_id,company_name\n" + "".join(
+        f"ACC000{i},Fictional {i} {j}\n" for i in range(1, 6) for j in range(2)))
+    (data / "invoices.csv").write_text("account_id,amount\n" + "".join(
+        f"ACC000{i},100\n" for i in range(1, 6)))
+    out = tmp_path / (data.name + "-out")
+    run(SKILL / "scripts" / "scan.py", "--data-dir", data, "--audit-slug", "d", "--out", out / "d")
+    run(SKILL / "scripts" / "join_test.py", "--audit-slug", "d", "--tenant-domain", "seller.example",
+        "--output-base", out, "--data-dir", data, *extra)
+    return json.loads((out / "d" / "audit" / "join_findings.json").read_text())
+
+
+def test_duplicate_ids_block_whatever_the_file_is_called(tmp_path):
+    """Regression: the same duplicated account table renamed must still BLOCK."""
+    for name in ("accounts.csv", "accounts_export.csv", "sfdc.Account.csv", "x.csv"):
+        f = _dup_accounts_run(tmp_path, name)
+        assert f["overall_gate"] == "BLOCK", name
+        card = f["findings"][0]["cardinality"]
+        assert card["verdict"] == "DUPLICATE_KEYS_MULTIPLY_ROWS" and card["joined_row_count"] == 10
+        assert f["findings"][0]["linking_trust"] == "low"
+
+
+def test_unique_key_can_be_declared_and_unknown_owner_is_never_high(tmp_path):
+    from importlib import util
+    spec = util.spec_from_file_location("jt", SKILL / "scripts" / "join_test.py")
+    jt = util.module_from_spec(spec); spec.loader.exec_module(jt)
+    a, b = tmp_path / "a.csv", tmp_path / "b.csv"
+    a.write_text("account_id,mrr\n" + "".join(f"A{i},10\n" for i in range(1, 6) for _ in range(2)))
+    b.write_text("account_id,amount\n" + "".join(f"A{i},100\n" for i in range(1, 6)))
+    f = jt.test_one_candidate(a, "account_id", b, "account_id", "seller.example")
+    assert f["cardinality"]["verdict"] == "KEY_OWNER_UNVERIFIED" and f["linking_trust"] != "high"
+    f = jt.test_one_candidate(a, "account_id", b, "account_id", "seller.example",
+                              {"a.csv.account_id"})
+    assert f["cardinality"]["verdict"] == "DUPLICATE_KEYS_MULTIPLY_ROWS" and f["linking_trust"] == "low"
+
+
+def test_seller_domain_is_stripped_before_matching(tmp_path):
+    """Regression: two unrelated records sharing only seller.example must not match."""
+    from importlib import util
+    spec = util.spec_from_file_location("jt", SKILL / "scripts" / "join_test.py")
+    jt = util.module_from_spec(spec); spec.loader.exec_module(jt)
+    a, b = tmp_path / "accounts.csv", tmp_path / "calls.csv"
+    a.write_text("account_id,company_name,domain\na1,Buyer One,seller.example\n")
+    b.write_text("call_id,company_name,domain\nc1,Unrelated Buyer,seller.example\n")
+    f = jt.test_one_candidate(a, "domain", b, "domain", "seller.example")
+    assert f["n_matched"] == 0 and f["linking_trust"] == "low"
+    strip = f["tenant_domain_strip"]
+    assert strip["applied_to_key"] and strip["false_matches_avoided"] == 1
+    assert strip["excluded_left"] == 1 and strip["excluded_right"] == 1
+    # Emails and websites on the seller's domain (and subdomains) are stripped too;
+    # a real shared customer domain still matches.
+    a.write_text("account_id,company_name,email\na1,Buyer,rep@seller.example\na2,Real,ops@buyer.example\n")
+    b.write_text("call_id,company_name,website\nc1,X,https://www.app.seller.example/x\nc2,Y,buyer.example\n")
+    f = jt.test_one_candidate(a, "email", b, "website", "seller.example")
+    assert f["n_matched"] == 1 and f["tenant_domain_strip"]["false_matches_avoided"] == 0
+    assert f["tenant_domain_strip"]["excluded_left"] == 1 and f["tenant_domain_strip"]["excluded_right"] == 1
+    # A non-domain key is untouched and reports no strip.
+    f = jt.test_one_candidate(a, "account_id", b, "call_id", "seller.example")
+    assert f["tenant_domain_strip"]["applied_to_key"] is False
