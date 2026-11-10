@@ -24,7 +24,7 @@ from typing import Any
 
 import requests
 
-ENDPOINT = "https://api.firecrawl.dev/v1/scrape"
+ENDPOINT = "https://api.firecrawl.dev/v2/scrape"
 
 
 def scrape(

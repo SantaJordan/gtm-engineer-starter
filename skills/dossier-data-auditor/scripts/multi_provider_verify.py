@@ -128,7 +128,7 @@ def _call_firecrawl(domain: str, claimed_company: str, timeout_s: int = 20) -> d
         return {"error": "FIRECRAWL_API_KEY not set", "cost_usd": 0.0}
     try:
         r = requests.post(
-            "https://api.firecrawl.dev/v1/scrape",
+            "https://api.firecrawl.dev/v2/scrape",
             headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
             json={
                 "url": f"https://{domain}",

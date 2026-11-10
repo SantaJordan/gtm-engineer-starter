@@ -54,7 +54,7 @@ def firecrawl_render(domain: str, api_key: str | None) -> dict[str, Any]:
         return {"status": "no_api_key", "fingerprints_matched": [], "redirect_chain": []}
     try:
         r = requests.post(
-            "https://api.firecrawl.dev/v1/scrape",
+            "https://api.firecrawl.dev/v2/scrape",
             headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
             json={"url": f"https://{domain}", "formats": ["markdown", "html"]},
             timeout=20,
