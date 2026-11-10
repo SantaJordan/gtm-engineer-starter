@@ -142,7 +142,7 @@ def firecrawl_probe(url: str, api_key: str) -> dict:
     """Single Firecrawl scrape. Returns a small summary dict, never raises."""
     try:
         resp = requests.post(
-            "https://api.firecrawl.dev/v1/scrape",
+            "https://api.firecrawl.dev/v2/scrape",
             headers={
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",

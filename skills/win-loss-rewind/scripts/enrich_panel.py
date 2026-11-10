@@ -178,7 +178,7 @@ def firecrawl_map(domain: str, timeout: int = 60) -> dict:
     url = f"https://{domain}" if not domain.startswith("http") else domain
     try:
         r = requests.post(
-            "https://api.firecrawl.dev/v1/map",
+            "https://api.firecrawl.dev/v2/map",
             headers={"Authorization": f"Bearer {FIRECRAWL_API_KEY}",
                      "Content-Type": "application/json"},
             json={"url": url},
@@ -197,7 +197,7 @@ def firecrawl_scrape_homepage(domain: str, timeout: int = 60) -> dict:
     url = f"https://{domain}" if not domain.startswith("http") else domain
     try:
         r = requests.post(
-            "https://api.firecrawl.dev/v1/scrape",
+            "https://api.firecrawl.dev/v2/scrape",
             headers={"Authorization": f"Bearer {FIRECRAWL_API_KEY}",
                      "Content-Type": "application/json"},
             json={"url": url, "formats": ["markdown", "html"]},
