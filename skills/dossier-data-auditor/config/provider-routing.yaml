@@ -119,7 +119,7 @@ providers:
 
   firecrawl_render:
     base_url: "https://api.firecrawl.dev"
-    endpoint: "/v1/scrape"
+    endpoint: "/v2/scrape"
     auth: bearer
     env: FIRECRAWL_API_KEY
     cost_per_page_usd: 0.001
@@ -226,7 +226,7 @@ providers:
     cost_per_call_usd: 0.0009
 
   dns_resolve:
-    description: "Free DNS lookup; built into scripts/domain_state_classify.py via dnspython"
+    description: "Free DNS lookup; built into scripts/domain_state_classify.py via the Python socket module"
     cost_per_call_usd: 0
 
   regex_plus_dns_mx:
