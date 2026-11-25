@@ -268,15 +268,26 @@ def apify_linkedin_company(linkedin_url: str, timeout: int = 120) -> dict:
                 "error": "customer has no linkedin_url"}
     try:
         r = requests.post(
-            f"https://api.apify.com/v2/acts/anchor~linkedin-company-detail/run-sync-get-dataset-items?token={APIFY_TOKEN}",
-            headers={"Content-Type": "application/json"},
+            f"https://api.apify.com/v2/acts/anchor~linkedin-company-detail/run-sync-get-dataset-items",
+            headers={"Content-Type": "application/json", "Authorization": f"Bearer {APIFY_TOKEN}"},
             json={"linkedinUrl": linkedin_url},
             timeout=timeout,
         )
         r.raise_for_status()
         return pp.parse_apify_linkedin(r.json() or [], linkedin_url)
-    except Exception as e:
-        return {"source": "apify_linkedin", "success": False, "data": None, "error": str(e)}
+    except requests.exceptions.HTTPError as exc:
+        # Never serialize provider exceptions: they may contain request details.
+        status = exc.response.status_code if exc.response is not None else None
+        error = f"Apify HTTP {status}" if type(status) is int and 400 <= status <= 599 else "Apify HTTP error"
+    except requests.exceptions.Timeout:
+        error = "Apify request timed out"
+    except requests.exceptions.JSONDecodeError:
+        error = "Apify returned invalid JSON"
+    except requests.exceptions.RequestException:
+        error = "Apify request failed"
+    except Exception:
+        error = "Apify response processing failed"
+    return {"source": "apify_linkedin", "success": False, "data": None, "error": error}
 
 
 # ------------------------------------------------------------------ source: Wayback timeline (free, keyless)
