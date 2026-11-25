@@ -114,7 +114,7 @@ Spawn `domain-canonicalizer-agent` (prompt: `prompts/02b-domain-canonicalizer.md
 
 1. Blitz `domain↔linkedin` round-trip (unlimited; primary).
 2. OpenWebNinja AI Mode cross-check (independent grounded second opinion).
-3. Firecrawl page render → `domain_state_classify.py` emits one of `{verified, parked, dead, acquired_or_repointed, tenant_subdomain, shortener}`.
+3. Firecrawl page render → `domain_state_classify.py` emits one of `{verified, parked, dead, acquired_or_repointed, tenant_subdomain, shortener, not_checked}`. DNS alone cannot verify website state; failed, unavailable, or empty renders remain `not_checked`. This is a website-state result, not company-identity proof.
 4. Exa SERP only when Blitz + OWN disagree (Serper retired).
 5. DiscoLike `/match` last-resort.
 

@@ -2,7 +2,7 @@
 """
 domain_state_classify.py — W2b: classify each canonical-picked domain's state.
 DNS resolution + Firecrawl page render → one of {verified, parked, dead,
-acquired_or_repointed, tenant_subdomain, shortener}.
+acquired_or_repointed, tenant_subdomain, shortener, not_checked}.
 
 Usage:
     uv run domain_state_classify.py --audit-slug <slug> [--max-checks 100]
@@ -61,8 +61,14 @@ def firecrawl_render(domain: str, api_key: str | None) -> dict[str, Any]:
         )
         if r.status_code != 200:
             return {"status": f"http_{r.status_code}", "fingerprints_matched": [], "redirect_chain": []}
-        data = r.json().get("data", {})
-        content = (data.get("markdown") or data.get("html") or "").lower()
+        payload = r.json()
+        if payload.get("success") is not True:
+            return {"status": "unsuccessful_render", "fingerprints_matched": [], "redirect_chain": []}
+        data = payload.get("data") or {}
+        content = (data.get("markdown") or "").strip() or (data.get("html") or "").strip()
+        if not content:
+            return {"status": "empty_render", "fingerprints_matched": [], "redirect_chain": []}
+        content = content.lower()
         matched = [fp for fp in PARKING_FINGERPRINTS if fp in content]
         meta = data.get("metadata", {}) or {}
         return {
@@ -83,6 +89,8 @@ def classify(domain: str, dns_ok: bool, firecrawl: dict[str, Any]) -> str:
         return "tenant_subdomain"
     if not dns_ok:
         return "dead"
+    if firecrawl.get("status") != "ok":
+        return "not_checked"
     if firecrawl.get("fingerprints_matched"):
         return "parked"
     final_url = firecrawl.get("final_url", "")
